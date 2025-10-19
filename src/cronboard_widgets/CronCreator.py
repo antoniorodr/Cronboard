@@ -1,6 +1,7 @@
 import crontab
 from textual.app import ComposeResult
 from crontab import CronTab
+from textual import events
 from textual.widgets import Button, Label, Input
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import ModalScreen
@@ -79,6 +80,12 @@ class CronCreator(ModalScreen[bool]):
             id="dialog",
         )
 
+    def _on_key(self, event: events.Key) -> None:
+        if event.key == "enter":
+            self.save_content()
+        elif event.key == "escape":
+            self.dismiss(False)
+
     def on_input_changed(self, event: Input.Changed) -> None:
         if event.input.id != "expression":
             return
@@ -92,10 +99,12 @@ class CronCreator(ModalScreen[bool]):
             label.remove()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id != "save":
+        if event.button.id == "save":
+            self.save_content()
+        elif event.button.id == "cancel":
             self.dismiss(False)
-            return
 
+    def save_content(self) -> None:
         identificator_input = self.query_one("#identificator", Input)
         expression_input = self.query_one("#expression", Input)
         command_input = self.query_one("#command", Input)
