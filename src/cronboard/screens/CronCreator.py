@@ -1,17 +1,18 @@
-from textual.app import ComposeResult
+from cron_descriptor import ExpressionDescriptor, Options
 from crontab import CronTab
-from textual.widgets import Button, Label, Input, RadioButton, RadioSet
+from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import ModalScreen
-from cron_descriptor import Options, ExpressionDescriptor
+from textual.widgets import Button, Input, Label, RadioButton, RadioSet
+
+from cronboard.services.CronAutoComplete import CronAutoComplete
 from cronboard.services.logging.cron_wrapper import (
+    command_without_wrapper,
     has_wrapper,
     wrap_command,
-    command_without_wrapper,
 )
 from cronboard.widgets.VimKeysRadioSet import VimKeysRadioSet
-from cronboard.services.CronAutoComplete import CronAutoComplete
 
 CRON_ALIASES = {
     "@reboot": None,

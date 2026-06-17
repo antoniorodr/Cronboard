@@ -1,5 +1,7 @@
-from cryptography.fernet import Fernet
 import os
+
+from cryptography.fernet import Fernet
+
 from cronboard.config import CONFIG_DIR, KEY_FILE
 
 

@@ -1,9 +1,10 @@
 import pytest
-from cronboard.services.messages import CronJobDeleted
-from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
-from tests.conftest import create_event, create_job_and_cron, make_remote_command
-from cronboard.app import CronBoard
 from pytest_mock import MockerFixture
+
+from cronboard.app import CronBoard
+from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
+from cronboard.services.messages import CronJobDeleted
+from tests.conftest import create_event, create_job_and_cron, make_remote_command
 
 
 @pytest.mark.asyncio

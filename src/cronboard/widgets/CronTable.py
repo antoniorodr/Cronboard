@@ -1,14 +1,16 @@
+from datetime import datetime
+
 from crontab import CronTab
-from textual.widgets import DataTable
+from rich.text import Text
 from textual.binding import Binding
 from textual.coordinate import Coordinate
-from datetime import datetime
-from rich.text import Text
+from textual.widgets import DataTable
+
 from cronboard.screens.CronInputSearch import CronInputSearch
 from cronboard.services.logging.cron_wrapper import (
+    command_without_wrapper,
     has_wrapper,
     wrap_command,
-    command_without_wrapper,
 )
 from cronboard.widgets.LogView import LogViewModal
 

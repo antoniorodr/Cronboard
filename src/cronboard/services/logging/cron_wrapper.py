@@ -1,12 +1,13 @@
 import base64
 import binascii
 import os
-import stat
-import paramiko
 import shlex
 import shutil
-from typing import Optional
-from cronboard.config import WRAPPER_SOURCE, CONFIG_DIR, CONFIG_REL_PATH, WRAPPER_DIST
+import stat
+
+import paramiko
+
+from cronboard.config import CONFIG_DIR, CONFIG_REL_PATH, WRAPPER_DIST, WRAPPER_SOURCE
 
 """
 Prefix for base64-encoded user command in wrapped crontab lines (avoids shell
@@ -28,7 +29,7 @@ def get_remote_bash_path(ssh: paramiko.SSHClient) -> str:
     return "/bin/bash"
 
 
-def get_remote_home(ssh: paramiko.SSHClient) -> Optional[str]:
+def get_remote_home(ssh: paramiko.SSHClient) -> str | None:
     try:
         _, stdout, stderr = ssh.exec_command("echo ~")
         home = stdout.read().decode().strip()

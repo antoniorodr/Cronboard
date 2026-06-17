@@ -5,9 +5,6 @@ from pathlib import Path
 
 import paramiko
 from pytest_mock import MockerFixture
-
-import cronboard.services.logging.cron_wrapper as mod
-
 from tests.conftest import (
     home_dir_under_tmp,
     patch_config_dir,
@@ -16,6 +13,8 @@ from tests.conftest import (
     ssh_mock_home_then_other,
     ssh_mock_install_remote_put_fail_exec,
 )
+
+import cronboard.services.logging.cron_wrapper as mod
 
 
 def test_get_remote_home_success(mocker: MockerFixture):

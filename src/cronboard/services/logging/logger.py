@@ -1,10 +1,12 @@
-import paramiko
-import shlex
-from pathlib import Path
 import posixpath
-from cronboard.services.logging.cron_wrapper import get_remote_home
-from cronboard.config import LOG_DIR, LOG_REL_PATH
+import shlex
 import shutil
+from pathlib import Path
+
+import paramiko
+
+from cronboard.config import LOG_DIR, LOG_REL_PATH
+from cronboard.services.logging.cron_wrapper import get_remote_home
 
 
 def get_log_files(identificator: str, ssh: paramiko.SSHClient | None = None):
@@ -48,7 +50,7 @@ def read_log_file(log_path: str, ssh: paramiko.SSHClient | None = None):
         log_file = Path(log_path)
         if not log_file.exists():
             return []
-        with open(log_file, "r") as f:
+        with open(log_file) as f:
             return f.readlines()
     else:
         safe_path = shlex.quote(log_path)

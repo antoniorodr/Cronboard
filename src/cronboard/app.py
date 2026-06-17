@@ -1,34 +1,36 @@
 import tomllib
-from importlib.metadata import version, PackageNotFoundError
-from crontab import CronTab
-import tomlkit
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
+
+import tomlkit
+from crontab import CronTab
 from textual import events, on
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.containers import Container
 from textual.widgets import (
-    Footer,
-    Label,
-    Tabs,
-    Tab,
     Button,
-    Input,
     Checkbox,
+    Footer,
+    Input,
+    Label,
     MaskedInput,
     RadioButton,
     RadioSet,
     Select,
     Switch,
+    Tab,
+    Tabs,
     TextArea,
 )
-from cronboard.widgets.CronTable import CronTable
-from textual.containers import Container
-from cronboard.widgets.CronTabs import CronTabs
+
 from cronboard.screens.CronCreator import CronCreator
-from cronboard.services.messages import CronJobDeleted
-from cronboard.services.logging.logger import delete_logs_for_identificator
 from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
 from cronboard.screens.CronServers import CronServers
+from cronboard.services.logging.logger import delete_logs_for_identificator
+from cronboard.services.messages import CronJobDeleted
+from cronboard.widgets.CronTable import CronTable
+from cronboard.widgets.CronTabs import CronTabs
 
 
 def is_form_element(element):

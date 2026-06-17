@@ -1,3 +1,7 @@
+import os
+from pathlib import Path
+
+from textual.widgets import Input
 from textual_autocomplete import (
     DropdownItem,
     PathAutoComplete,
@@ -6,9 +10,6 @@ from textual_autocomplete import (
 from textual_autocomplete._path_autocomplete import (
     PathDropdownItem,
 )
-import os
-from pathlib import Path
-from textual.widgets import Input
 
 
 class CronAutoComplete(PathAutoComplete):

@@ -1,8 +1,9 @@
 import pytest
-from cronboard.app import CronBoard
-from cronboard.services.messages import CronJobDeleted
 from pytest_mock import MockerFixture
 from textual.widgets import Tree
+
+from cronboard.app import CronBoard
+from cronboard.services.messages import CronJobDeleted
 
 _APP = "cronboard.app"
 
