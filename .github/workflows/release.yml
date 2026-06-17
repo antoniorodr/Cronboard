@@ -6,6 +6,21 @@ on:
 jobs:
   test:
     uses: ./.github/workflows/tests.yml
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.2.0
+      - name: Build package
+        run: uv build
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: dist
+          path: dist/
   changelog:
     needs: test
     runs-on: ubuntu-latest
@@ -28,17 +43,16 @@ jobs:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
   release:
-    needs: changelog
+    needs: [changelog, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6.0.2
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v8.0.0
-      - name: Build package
-        run: uv build
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: dist
+          path: dist/
       - name: Create release
         uses: ncipollo/release-action@v1.21.0
         with:

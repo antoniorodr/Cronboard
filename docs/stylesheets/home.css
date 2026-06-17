@@ -1,0 +1,868 @@
+/* ============================================================================
+   Cronboard Landing Page — Catppuccin Mocha
+   ============================================================================ */
+
+/* --- Hide sidebar, tabs, footer nav, and header title on home --- */
+/* Desktop only: hide sidebar on home page */
+@media (min-width: 76.25em) {
+  body:has(.cronboard-home) .md-sidebar--primary,
+  body:has(.cronboard-home) .md-sidebar--secondary,
+  body:has(.cronboard-home) .md-tabs,
+  body:has(.cronboard-home) .md-footer__inner,
+  body:has(.cronboard-home) .md-header__title {
+    display: none !important;
+  }
+}
+
+/* Mobile: keep sidebar visible for hamburger menu, but hide secondary sidebar and tabs */
+@media (max-width: 76.235em) {
+  body:has(.cronboard-home) .md-sidebar--secondary,
+  body:has(.cronboard-home) .md-tabs,
+  body:has(.cronboard-home) .md-footer__inner,
+  body:has(.cronboard-home) .md-header__title {
+    display: none !important;
+  }
+}
+
+@media (min-width: 76.25em) {
+  body:has(.cronboard-home) .md-content {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 76.25em) {
+  body:has(.cronboard-home) .md-content__inner {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* ============================================================================
+   Catppuccin Mocha Variables (dark)
+   ============================================================================ */
+[data-md-color-scheme=slate] {
+  --cb-bg: #1e1e2e;
+  --cb-surface: #313244;
+  --cb-surface-alt: #282840;
+  --cb-border: #45475a;
+  --cb-text: #cdd6f4;
+  --cb-text-dim: #a6adc8;
+  --cb-text-muted: #6c7086;
+  --cb-mauve: #cba6f7;
+  --cb-teal: #94e2d5;
+  --cb-blue: #89b4fa;
+  --cb-green: #a6e3a1;
+  --cb-red: #f38ba8;
+  --cb-yellow: #f9e2af;
+  --cb-peach: #fab387;
+  --cb-cursor: #cba6f7;
+  --cb-terminal-bg: #181825;
+  --cb-terminal-bar: #11111b;
+  --cb-glow: rgba(229, 144, 168, 0.08);
+  --cb-glow-hover: rgba(229, 144, 168, 0.15);
+  --cb-accent: #E590A8;
+}
+
+/* ============================================================================
+   Catppuccin Latte Variables (light)
+   ============================================================================ */
+[data-md-color-scheme=default] {
+  --cb-bg: #eff1f5;
+  --cb-surface: #ccd0da;
+  --cb-surface-alt: #e6e9ef;
+  --cb-border: #bcc0cc;
+  --cb-text: #4c4f69;
+  --cb-text-dim: #6c6f85;
+  --cb-text-muted: #9ca0b0;
+  --cb-mauve: #8839ef;
+  --cb-teal: #179299;
+  --cb-blue: #1e66f5;
+  --cb-green: #40a02b;
+  --cb-red: #d20f39;
+  --cb-yellow: #df8e1d;
+  --cb-peach: #fe640b;
+  --cb-cursor: #8839ef;
+  --cb-terminal-bg: #e6e9ef;
+  --cb-terminal-bar: #dce0e8;
+  --cb-glow: rgba(184, 116, 138, 0.1);
+  --cb-glow-hover: rgba(184, 116, 138, 0.18);
+  --cb-accent: #b8748a;
+}
+
+/* ============================================================================
+   Home Container
+   ============================================================================ */
+
+.cronboard-home {
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--cb-bg);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============================================================================
+   Hero Section
+   ============================================================================ */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  padding: 2rem 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: center;
+  min-height: 75vh;
+}
+
+.hero-left {
+  display: flex;
+  justify-content: center;
+}
+
+/* Terminal Widget */
+.hero-terminal {
+  background: var(--cb-terminal-bg);
+  border: 1px solid var(--cb-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.install-terminal {
+  background: var(--cb-terminal-bg);
+  border: 1px solid var(--cb-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  background: var(--cb-terminal-bar);
+  border-bottom: 1px solid var(--cb-border);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-red { background: #f38ba8; }
+.dot-yellow { background: #f9e2af; }
+.dot-green { background: #a6e3a1; }
+
+.term-path {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--cb-text-muted);
+}
+
+.term-body {
+  padding: 1rem 1.15rem;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.term-line {
+  white-space: pre;
+}
+
+.term-art {
+  color: var(--cb-mauve);
+  font-family: 'miniwi', monospace;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  font-size: 1.6rem;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+.term-dim {
+  color: var(--cb-text-dim);
+}
+
+.term-empty {
+  height: 0.4em;
+}
+
+.prompt {
+  color: var(--cb-teal);
+  font-weight: 600;
+}
+
+.cursor {
+  animation: cb-blink 1s step-end infinite;
+  color: var(--cb-cursor);
+}
+
+@keyframes cb-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Hero Right */
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hero-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--cb-text);
+  letter-spacing: -0.01em;
+}
+
+.hero-subtitle {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--cb-text-dim);
+  margin: 0;
+  max-width: 440px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.hero-install {
+  margin-top: 0.25rem;
+}
+
+.install-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--cb-terminal-bg);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.3rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border);
+}
+
+.copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cb-text-muted);
+  padding: 0.15rem;
+  border-radius: 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.copy-btn:hover {
+  color: var(--cb-text);
+}
+
+/* ============================================================================
+    Announcement Banner
+    ============================================================================ */
+
+.hero-announcement-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, var(--cb-surface) 0%, var(--cb-surface-alt) 100%);
+  border: 1px solid var(--cb-accent);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  max-width: 480px;
+  box-shadow: 0 0 20px var(--cb-glow);
+  transition: all 0.2s ease;
+}
+
+.hero-announcement-card:hover {
+  border-color: var(--cb-accent);
+  box-shadow: 0 0 24px var(--cb-glow-hover);
+  transform: translateY(-1px);
+}
+
+.announcement-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--cb-accent);
+  color: var(--cb-bg);
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.announcement-text {
+  margin: 0;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--cb-text);
+}
+
+.announcement-text a {
+  color: var(--cb-accent);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.announcement-text a:hover {
+  border-bottom-color: var(--cb-accent);
+}
+
+/* ============================================================================
+    Demo Section
+    ============================================================================ */
+
+.demo-section {
+  padding: 1rem 3rem 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.demo-window {
+  background: var(--cb-terminal-bg);
+  border: 1px solid var(--cb-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.25);
+}
+
+.demo-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  background: var(--cb-terminal-bar);
+  border-bottom: 1px solid var(--cb-border);
+}
+
+.demo-title {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--cb-text-muted);
+}
+
+.demo-body img {
+  width: 100%;
+  display: block;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+/* ============================================================================
+   Features Section
+   ============================================================================ */
+
+.features {
+  padding: 2rem 3rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.feature-card {
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-border);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  transition: border-color 0.2s;
+  position: relative;
+}
+
+.feature-card:hover {
+  border-color: var(--cb-mauve);
+}
+
+.feature-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.feature-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.6rem;
+}
+
+.feature-sym {
+  color: var(--cb-mauve);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.feature-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--cb-text);
+}
+
+.feature-desc {
+  color: var(--cb-text-dim);
+  line-height: 1.5;
+  margin: 0 0 0.85rem;
+  font-size: 0.8rem;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.feature-gif {
+  border-radius: 0.3rem;
+  overflow: hidden;
+  border: 1px solid var(--cb-border);
+}
+
+.feature-gif img {
+  width: 100%;
+  display: block;
+}
+
+/* ============================================================================
+   Installation Section
+   ============================================================================ */
+
+.install-section {
+  padding: 2rem 3rem 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 5rem;
+  z-index: 1;
+}
+
+.install-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--cb-border);
+}
+
+.tab {
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--cb-text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.tab:hover {
+  color: var(--cb-text);
+}
+
+.tab.active {
+  color: var(--cb-mauve);
+  border-bottom-color: var(--cb-mauve);
+}
+
+.install-panels {
+  display: grid;
+}
+
+.install-panel {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 1rem 1.15rem;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.install-panel:not(.active) {
+  display: none;
+}
+
+.install-panel.active {
+  visibility: visible;
+}
+
+.term-cmd {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.term-cmd-text {
+  flex: 1;
+  white-space: normal;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.term-copy {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cb-text-muted);
+  padding: 0.1rem;
+  border-radius: 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s;
+  opacity: 0;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+.term-copy {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cb-text-muted);
+  padding: 0.1rem;
+  border-radius: 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s;
+  opacity: 0;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+.install-terminal:hover .term-copy,
+.term-copy:hover {
+  opacity: 1;
+}
+
+.term-copy:hover {
+  color: var(--cb-text);
+}
+
+.term-copy.copied {
+  color: var(--cb-green);
+  opacity: 1;
+}
+
+.term-copy-all {
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--cb-border);
+  margin-top: 0.25rem;
+}
+
+.term-copy-all-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--cb-text-muted);
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-family: 'JetBrains Mono', monospace;
+  transition: color 0.15s;
+}
+
+.term-copy-all-btn:hover {
+  color: var(--cb-text);
+}
+
+.term-copy-all-btn.copied {
+  color: var(--cb-green);
+}
+
+/* Copy toast */
+.copy-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(1rem);
+  background: var(--cb-mauve);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 1000;
+}
+
+[data-md-color-scheme=slate] .copy-toast {
+  color: #1e1e2e;
+}
+
+.copy-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.install-panel .comment {
+  color: var(--cb-text-muted);
+}
+
+/* ============================================================================
+   Community Section
+   ============================================================================ */
+
+.community {
+  padding: 2rem 3rem;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.community-text {
+  font-size: 0.95rem;
+  color: var(--cb-text-dim);
+  margin: 0 0 1.25rem;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.community-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+/* ============================================================================
+   Final CTA Section
+   ============================================================================ */
+
+.final-cta {
+  padding: 3rem;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.final-cta h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+  color: var(--cb-text);
+}
+
+/* ============================================================================
+   Buttons
+   ============================================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.3rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.15s;
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.install-cmd svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.term-copy svg {
+  width: 12px;
+  height: 12px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.btn svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+a.btn-primary {
+  background: var(--cb-mauve);
+  color: #1e1e2e !important;
+  border-color: var(--cb-mauve);
+}
+
+a.btn-primary:hover,
+a.btn-primary:focus {
+  background: #b88ef0;
+  border-color: #b88ef0;
+  color: #1e1e2e !important;
+}
+
+[data-md-color-scheme=default] a.btn-primary {
+  background: var(--cb-mauve);
+  color: #eff1f5 !important;
+  border-color: var(--cb-mauve);
+}
+
+[data-md-color-scheme=default] a.btn-primary:hover,
+[data-md-color-scheme=default] a.btn-primary:focus {
+  background: #7c33d4;
+  border-color: #7c33d4;
+  color: #eff1f5 !important;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--cb-text-dim);
+  border-color: var(--cb-border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--cb-mauve);
+  color: var(--cb-mauve);
+}
+
+.btn-large {
+  padding: 0.65rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* ============================================================================
+   Responsive
+   ============================================================================ */
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 3rem 1.5rem 1.5rem;
+    gap: 1.5rem;
+    min-height: auto;
+  }
+
+  .hero-left {
+    justify-content: flex-start;
+  }
+
+  .hero-terminal {
+    max-width: 100%;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-section,
+  .features,
+  .install-section,
+  .community,
+  .final-cta {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .hero {
+    padding: 2rem 1rem 1rem;
+  }
+
+  .hero-title {
+    font-size: 1.4rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .term-body {
+    font-size: 0.55rem;
+    min-width: 0;
+  }
+
+  .community-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .install-tabs {
+    overflow-x: auto;
+  }
+
+  .tab {
+    white-space: nowrap;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.7rem;
+  }
+
+  .install-panel {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .install-terminal {
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .install-panels {
+    min-width: 0;
+  }
+
+  .install-panel {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .term-line,
+  .term-cmd-text {
+    white-space: normal !important;
+    word-break: break-all;
+    overflow-wrap: break-word;
+  }
+
+  .term-cmd {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .term-copy {
+    opacity: 1;
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+}

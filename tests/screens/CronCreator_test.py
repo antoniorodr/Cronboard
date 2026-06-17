@@ -1,15 +1,14 @@
 import pytest
 from pytest_mock import MockerFixture
-from .conftest import make_creator
-from cronboard_widgets.CronCreator import CronCreator
+from tests.conftest import make_creator
+from cronboard.screens.CronCreator import CronCreator
 from cronboard.app import CronBoard
-from cronboard_widgets.CronCreator import CronAutoComplete
+from cronboard.screens.CronCreator import CronAutoComplete
 
 
 @pytest.mark.asyncio
 async def test_open_create_cronjob_modal(app: CronBoard):
     async with app.run_test() as pilot:
-        await pilot.press("tab")
         await pilot.press("c")
         assert isinstance(app.screen, CronCreator)
 

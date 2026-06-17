@@ -47,11 +47,10 @@ Copyright &copy; 2026 Antonio Rodriguez. All rights reserved.
 #
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
-  { "Cronboard" = "index.md" },
   { "Installation" = "installation.md" },
   { "Getting Started" = "getting-started.md" },
   { "Configuration" = "configuration.md" },
-  { "Shortcuts" = "keyboard-shortcuts.md" },
+  { "Keybinds" = "keyboard-shortcuts.md" },
   { "Features" = [
     { "Local Cron" = "features/local-cron.md" },
     { "Remote Servers" = "features/remote-servers.md" },
@@ -67,7 +66,7 @@ nav = [
 #
 # Read more: https://zensical.org/docs/customization/#additional-css
 #
-#extra_css = ["stylesheets/extra.css"]
+extra_css = ["stylesheets/catppuccin.css", "stylesheets/home.css"]
 
 # With the `extra_javascript` option you can add your own JavaScript to your
 # project to customize the behavior according to your needs.
@@ -75,13 +74,13 @@ nav = [
 # The path provided should be relative to the "docs_dir".
 #
 # Read more: https://zensical.org/docs/customization/#additional-javascript
-#extra_javascript = ["javascripts/extra.js"]
+extra_javascript = ["javascripts/docs-link.js", "javascripts/install-tabs.js"]
 
 # ----------------------------------------------------------------------------
 # Section for configuring theme options
 # ----------------------------------------------------------------------------
 [project.theme]
-logo = "logo.png"
+# logo = "logo.png"
 
 # change this to "classic" to use the traditional Material for MkDocs look.
 #variant = "classic"
@@ -94,7 +93,7 @@ logo = "logo.png"
 # Read more:
 # - https://zensical.org/docs/customization/#extending-the-theme
 #
-#custom_dir = "overrides"
+custom_dir = "overrides"
 
 # With the "favicon" option you can set your own image to use as the icon
 # browsers will use in the browser title bar or tab bar. The path provided
@@ -271,11 +270,15 @@ features = [
 # ----------------------------------------------------------------------------
 [[project.theme.palette]]
 scheme = "default"
+primary = "custom"
+accent = "custom"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
 scheme = "slate"
+primary = "custom"
+accent = "custom"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
@@ -285,9 +288,9 @@ toggle.name = "Switch to light mode"
 # of suitably licensed fonts. There are options for a normal text font and for
 # a monospaced font used in code blocks.
 # ----------------------------------------------------------------------------
-#[project.theme.font]
-#text = "Inter"
-#code = "Jetbrains Mono"
+[project.theme.font]
+text = "DM Sans"
+code = "JetBrains Mono"
 
 # ----------------------------------------------------------------------------
 # You can configure your own logo to be shown in the header using the "logo"

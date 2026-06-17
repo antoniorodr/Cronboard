@@ -16,7 +16,7 @@ The app reads your user crontab on startup. If you have no cron jobs yet, the ta
 
 When Cronboard opens you will see a single window with a header, tab bar, main table, and footer. The layout is fixed so you always know where to look.
 
-![Cronboard interface with header, Local and Servers tabs, and the main cron job table](images/interface-overview.gif)
+![Cronboard interface with header, Local and Servers tabs, and the main cron job table](images/interface-ov.gif)
 
 - **Header** — shows the app name and current version. Useful to confirm you’re running the version you expect.
 - **Tab bar** — switch between **Local** (your local cron jobs) and **Servers** (remote SSH servers). Only one tab is active at a time; the main table shows the jobs for the active tab.

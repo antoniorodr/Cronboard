@@ -1,0 +1,279 @@
+/* ============================================================================
+    Miniwi Font (8x4 bitmap font for ASCII art logo)
+    ============================================================================ */
+@font-face {
+  font-family: 'miniwi';
+  src: url('../fonts/miniwi.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================================
+    Catppuccin Latte (light mode)
+    ============================================================================ */
+[data-md-color-scheme=default] {
+  --md-hue: 220;
+  --md-default-fg-color: #4c4f69;
+  --md-default-fg-color--light: #6c6f85;
+  --md-default-fg-color--lighter: #9ca0b0;
+  --md-default-fg-color--lightest: #ccd0da;
+  --md-default-bg-color: #eff1f5;
+  --md-default-bg-color--light: #e6e9ef;
+  --md-default-bg-color--lighter: #dce0e8;
+  --md-default-bg-color--lightest: #ccd0da;
+  --md-code-fg-color: #4c4f69;
+  --md-code-bg-color: #e6e9ef;
+  --md-code-hl-color: #8839ef20;
+  --md-code-hl-number-color: #fe640b;
+  --md-code-hl-special-color: #d20f39;
+  --md-code-hl-function-color: #8839ef;
+  --md-code-hl-constant-color: #8839ef;
+  --md-code-hl-keyword-color: #8839ef;
+  --md-code-hl-string-color: #40a02b;
+  --md-code-hl-name-color: #4c4f69;
+  --md-primary-fg-color: #8839ef;
+  --md-primary-fg-color--light: #7c33d4;
+  --md-primary-fg-color--dark: #6d28d9;
+  --md-primary-bg-color: #eff1f5;
+  --md-primary-bg-color--light: #eff1f5cc;
+  --md-accent-fg-color: #179299;
+  --md-accent-fg-color--transparent: #17929920;
+  --md-typeset-color: #4c4f69;
+  --md-typeset-a-color: #8839ef;
+  --md-typeset-kbd-color: #e6e9ef;
+  --md-typeset-kbd-border-color: #ccd0da;
+  --md-typeset-kbd-accent-color: #4c4f69;
+  --md-typeset-mark-color: #8839ef30;
+  --md-typeset-table-color: #ccd0da;
+  --md-admonition-fg-color: #4c4f69;
+  --md-admonition-bg-color: #eff1f5;
+  --md-footer-bg-color: #4c4f69;
+  --md-footer-bg-color--dark: #3c3f54;
+  --md-shadow-z1: 0 0.2rem 0.5rem #0000000d, 0 0 0.05rem #0000001a;
+  --md-shadow-z2: 0 0.2rem 0.5rem #0000001a, 0 0 0.05rem #00000040;
+  --md-shadow-z3: 0 0.2rem 0.5rem #00000033, 0 0 0.05rem #00000059;
+}
+
+/* ============================================================================
+   Catppuccin Mocha (dark mode)
+   ============================================================================ */
+[data-md-color-scheme=slate] {
+  --md-hue: 220;
+  --md-default-fg-color: #cdd6f4;
+  --md-default-fg-color--light: #a6adc8;
+  --md-default-fg-color--lighter: #6c7086;
+  --md-default-fg-color--lightest: #45475a;
+  --md-default-bg-color: #1e1e2e;
+  --md-default-bg-color--light: #313244;
+  --md-default-bg-color--lighter: #45475a;
+  --md-default-bg-color--lightest: #313244;
+  --md-code-fg-color: #cdd6f4;
+  --md-code-bg-color: #313244;
+  --md-code-hl-color: #cba6f720;
+  --md-code-hl-number-color: #fab387;
+  --md-code-hl-special-color: #f38ba8;
+  --md-code-hl-function-color: #cba6f7;
+  --md-code-hl-constant-color: #cba6f7;
+  --md-code-hl-keyword-color: #cba6f7;
+  --md-code-hl-string-color: #a6e3a1;
+  --md-code-hl-name-color: #cdd6f4;
+  --md-primary-fg-color: #cba6f7;
+  --md-primary-fg-color--light: #b88ef0;
+  --md-primary-fg-color--dark: #a675e0;
+  --md-primary-bg-color: #1e1e2e;
+  --md-primary-bg-color--light: #1e1e2ecc;
+  --md-accent-fg-color: #94e2d5;
+  --md-accent-fg-color--transparent: #94e2d520;
+  --md-typeset-color: #cdd6f4;
+  --md-typeset-a-color: #cba6f7;
+  --md-typeset-kbd-color: #313244;
+  --md-typeset-kbd-border-color: #45475a;
+  --md-typeset-kbd-accent-color: #cdd6f4;
+  --md-typeset-mark-color: #cba6f730;
+  --md-typeset-table-color: #45475a;
+  --md-admonition-fg-color: #cdd6f4;
+  --md-admonition-bg-color: #1e1e2e;
+  --md-footer-bg-color: #313244;
+  --md-footer-bg-color--dark: #181825;
+  --md-shadow-z1: 0 0.2rem 0.5rem #0000001a, 0 0 0.05rem #00000033;
+  --md-shadow-z2: 0 0.2rem 0.5rem #00000033, 0 0 0.05rem #00000066;
+  --md-shadow-z3: 0 0.2rem 0.5rem #0000004d, 0 0 0.05rem #00000080;
+}
+
+/* ============================================================================
+   Header / Nav tweaks
+   ============================================================================ */
+[data-md-color-scheme=slate] .md-header,
+[data-md-color-scheme=slate] .md-tabs {
+  background: var(--md-default-bg-color--light);
+}
+
+[data-md-color-scheme=default] .md-header,
+[data-md-color-scheme=default] .md-tabs {
+  background: var(--md-default-bg-color--light);
+  color: var(--md-default-fg-color);
+}
+
+.md-header__docs-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--md-default-fg-color);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  transition: all 0.2s;
+  margin-left: auto;
+}
+
+.md-header__docs-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.md-header__docs-link:hover {
+  border-color: var(--md-primary-fg-color);
+  color: var(--md-primary-fg-color);
+}
+
+.md-header__donate-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--md-primary-fg-color);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--md-primary-fg-color);
+  transition: all 0.2s;
+  margin-left: 0.5rem;
+}
+
+.md-header__donate-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.md-header__donate-link:hover {
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+/* Logo in header */
+.md-logo__ascii {
+  margin: 0;
+  padding: 0;
+  font-family: 'miniwi', monospace;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--md-primary-fg-color);
+  display: inline-block;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+.md-header__button.md-logo {
+  padding: 0.2rem 0.4rem;
+}
+
+.md-header__button.md-logo:hover {
+  opacity: 0.7;
+}
+
+/* Hide site name text next to ASCII logo in header */
+.md-header__topic:first-child {
+  display: none !important;
+}
+
+.md-header__title--active .md-header__topic:first-child {
+  display: none !important;
+}
+
+/* Hide "Cronboard" text in sidebar nav title, keep logo */
+.md-nav__title[for="__drawer"] {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.md-nav__title[for="__drawer"] .md-nav__button,
+.md-nav__title[for="__drawer"] .md-nav__button * {
+  font-size: 0.85rem !important;
+  line-height: 1.2 !important;
+}
+
+/* Push docs button and everything after it to the right */
+.md-header__docs-link {
+  margin-left: auto;
+}
+
+/* ============================================================================
+   Sidebar / Nav links
+   ============================================================================ */
+[data-md-color-scheme=slate] .md-nav__link {
+  color: var(--md-default-fg-color--light);
+}
+
+[data-md-color-scheme=slate] .md-nav__link--active,
+[data-md-color-scheme=slate] .md-nav__link:hover {
+  color: var(--md-primary-fg-color);
+}
+
+[data-md-color-scheme=default] .md-nav__link {
+  color: var(--md-default-fg-color--light);
+}
+
+[data-md-color-scheme=default] .md-nav__link--active,
+[data-md-color-scheme=default] .md-nav__link:hover {
+  color: var(--md-primary-fg-color);
+}
+
+/* ============================================================================
+   Content area
+   ============================================================================ */
+[data-md-color-scheme=slate] .md-typeset {
+  color: var(--md-default-fg-color);
+}
+
+[data-md-color-scheme=slate] .md-typeset h1,
+[data-md-color-scheme=slate] .md-typeset h2,
+[data-md-color-scheme=slate] .md-typeset h3,
+[data-md-color-scheme=slate] .md-typeset h4 {
+  color: var(--md-default-fg-color);
+}
+
+[data-md-color-scheme=default] .md-typeset {
+  color: var(--md-default-fg-color);
+}
+
+[data-md-color-scheme=default] .md-typeset h1,
+[data-md-color-scheme=default] .md-typeset h2,
+[data-md-color-scheme=default] .md-typeset h3,
+[data-md-color-scheme=default] .md-typeset h4 {
+  color: var(--md-default-fg-color);
+}
+
+/* ============================================================================
+   Footer
+   ============================================================================ */
+[data-md-color-scheme=slate] .md-footer {
+  background: var(--md-footer-bg-color);
+}
+
+[data-md-color-scheme=slate] .md-footer__inner {
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+
+[data-md-color-scheme=default] .md-footer {
+  background: var(--md-footer-bg-color);
+  color: var(--md-primary-bg-color);
+}
+
+[data-md-color-scheme=default] .md-footer__inner {
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}

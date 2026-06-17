@@ -8,7 +8,7 @@ authors = [
   { name = "Antonio Rodriguez", email = "kontakt@antoniorodriguez.no" },
 ]
 description = "A terminal-based dashboard for managing cron jobs"
-version = "0.5.4"
+version = "0.7.1"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
@@ -35,7 +35,7 @@ package-dir = { "" = "src" }
 
 [tool.pytest.ini_options]
 pythonpath = [".", "src"]
-addopts = "--cov=cronboard --cov=cronboard_widgets --cov=cronboard_encryption --cov-report=term-missing --cov-report=lcov:coverage.lcov"
+addopts = "--cov=cronboard --cov-report=term-missing --cov-report=lcov:coverage.lcov"
 
 
 [dependency-groups]
@@ -66,4 +66,4 @@ extend-select = [
 quote-style = "double"
 
 [tool.setuptools.package-data]
-"cronboard" = ["static/css/*.tcss"]
+"cronboard" = ["static/css/*.tcss", "logging/*.sh"]

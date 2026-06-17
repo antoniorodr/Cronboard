@@ -1,4 +1,4 @@
-from cronboard_encryption.CronEncrypt import encrypt_password, decrypt_password
+from cronboard.services.encryption.CronEncrypt import encrypt_password, decrypt_password
 import pytest
 
 

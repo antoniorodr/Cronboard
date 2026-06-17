@@ -11,7 +11,7 @@
 
 Cronboard is a terminal application for managing and scheduling cron jobs on local and remote servers. You can add, edit, pause, resume, search, and delete jobs from a Textual-based interface.
 
-Full documentation is available at [antoniorodr.github.io/cronboard](https://antoniorodr.github.io/cronboard).
+Full documentation is available at [cronboard.dev](https://cronboard.dev).
 
 ## 🎬 Demo
 
@@ -19,12 +19,10 @@ Full documentation is available at [antoniorodr.github.io/cronboard](https://ant
 
 ## ✨ Features
 
-- Check cron jobs
+- Check cron jobs, view the logs, and detect potential issues when running
 - Autocompletion for paths when creating or editing cron jobs
 - Create cron jobs with validation and human-readable feedback
-- Pause and resume cron jobs
-- Edit existing cron jobs
-- Delete cron jobs
+- Pause/resume, edit and delete cron jobs
 - View formatted last and next run times
 - Accept `special expressions` like `@daily`, `@yearly`, and `@monthly`
 - Connect to servers over SSH with either a password or SSH keys
@@ -45,44 +43,14 @@ The project is built with:
 Before starting, make sure `cron` is installed and available on your machine:
 
 ```bash
-crontab -l
+where crontab
 ```
 
 If you install Cronboard with `pip` or `uv`, you also need Python 3.13 or newer.
 
 ## 📦 Installation
 
-### Manual installation
-
-```bash
-git clone https://github.com/antoniorodr/cronboard
-cd cronboard
-pip install .
-```
-
-### Homebrew installation
-
-```bash
-brew install cronboard
-```
-
-### Installation with [uv](https://docs.astral.sh/uv/)
-
-```bash
-uv tool install git+https://github.com/antoniorodr/cronboard
-```
-
-### AUR installation
-
-```bash
-yay -S cronboard
-```
-
-### Nix installation
-
-```bash
-nix profile add github:antoniorodr/cronboard
-```
+For installation instructions, please refer to the [official documentation](https://cronboard.dev/installation).
 
 ## 🚀 Getting Started
 

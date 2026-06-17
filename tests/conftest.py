@@ -1,13 +1,16 @@
+from pathlib import Path
+
 import pytest
 from pytest_mock import MockerFixture
 import pytest_asyncio
 from cronboard.app import CronBoard
-from cronboard_widgets.CronCreator import CronCreator
-from cronboard_widgets.CronCreator import CronAutoComplete
+from cronboard.screens.CronCreator import CronCreator
+from cronboard.screens.CronCreator import CronAutoComplete
 from types import SimpleNamespace
-from cronboard_widgets.CronSSHModal import CronSSHModal
+from cronboard.screens.CronSSHModal import CronSSHModal
 from collections.abc import AsyncIterator
 from textual.pilot import Pilot
+from cronboard.services.logging import cron_wrapper as mod
 
 
 @pytest.fixture
@@ -24,9 +27,9 @@ def app(mocker: MockerFixture):
 
     fake_cron = mocker.MagicMock()
     fake_cron.__iter__ = mocker.MagicMock(side_effect=lambda: iter([fake_job]))
-    mocker.patch("cronboard_widgets.CronTable.CronTab", return_value=fake_cron)
+    mocker.patch("cronboard.widgets.CronTable.CronTab", return_value=fake_cron)
     mocker.patch(
-        "cronboard_widgets.CronDeleteConfirmation.CronTab", return_value=fake_cron
+        "cronboard.screens.CronDeleteConfirmation.CronTab", return_value=fake_cron
     )
     yield CronBoard()
 
@@ -83,3 +86,125 @@ def make_query_one(mapping):
 
 def create_content(mocker: MockerFixture):
     return mocker.MagicMock()
+
+
+def mock_ssh_exec_streams(
+    mocker: MockerFixture,
+    *,
+    stdout: bytes = b"",
+    stderr: bytes = b"",
+):
+    """Return stdout and stderr mocks whose read() returns the given bytes."""
+    stdout_mock = mocker.Mock()
+    stdout_mock.read.return_value = stdout
+    stderr_mock = mocker.Mock()
+    stderr_mock.read.return_value = stderr
+    return stdout_mock, stderr_mock
+
+
+def ssh_mock_exec_return(
+    mocker: MockerFixture,
+    *,
+    stdout: bytes = b"",
+    stderr: bytes = b"",
+    stdin=None,
+    spec: list[str] | None = None,
+):
+    """SSH mock whose every exec_command returns the same (stdin, stdout, stderr) streams."""
+    ssh_mock = mocker.Mock(spec=spec) if spec is not None else mocker.Mock()
+    stdout_mock, stderr_mock = mock_ssh_exec_streams(
+        mocker, stdout=stdout, stderr=stderr
+    )
+    ssh_mock.exec_command.return_value = (stdin, stdout_mock, stderr_mock)
+    return ssh_mock
+
+
+def ssh_mock_exec_sequence(
+    mocker: MockerFixture,
+    responses: list[tuple[bytes, bytes]],
+):
+    """SSH mock: each exec_command consumes the next (stdout, stderr) payload in order."""
+    ssh = mocker.Mock()
+    tuples = []
+    for stdout_b, stderr_b in responses:
+        out_m, err_m = mock_ssh_exec_streams(mocker, stdout=stdout_b, stderr=stderr_b)
+        tuples.append((None, out_m, err_m))
+    ssh.exec_command.side_effect = tuples
+    return ssh
+
+
+def ssh_mock_exec_raises(mocker: MockerFixture, exc: BaseException):
+    ssh_mock = mocker.Mock()
+    ssh_mock.exec_command.side_effect = exc
+    return ssh_mock
+
+
+def ssh_mock_home_then_other(
+    mocker: MockerFixture,
+    *,
+    home_stdout: bytes,
+    other_stdout: bytes,
+    home_stderr: bytes = b"",
+    other_stderr: bytes = b"",
+):
+    """exec_command dispatches on cmd == \"echo $HOME\" vs subsequent commands."""
+    ssh = mocker.Mock()
+
+    def exec_command(cmd):
+        mock_stdout = mocker.Mock()
+        mock_stderr = mocker.Mock()
+        if cmd == "echo $HOME":
+            mock_stdout.read.return_value = home_stdout
+            mock_stderr.read.return_value = home_stderr
+        else:
+            mock_stdout.read.return_value = other_stdout
+            mock_stderr.read.return_value = other_stderr
+        return (None, mock_stdout, mock_stderr)
+
+    ssh.exec_command.side_effect = exec_command
+    return ssh
+
+
+def ssh_mock_install_remote_put_fail_exec(mocker: MockerFixture):
+    """exec_command chain for install_wrapper_remote when SFTP put fails partway."""
+    ssh = mocker.Mock()
+
+    def exec_command(cmd):
+        stdout, stderr = mock_ssh_exec_streams(mocker, stderr=b"")
+        if cmd == "echo $HOME":
+            stdout.read.return_value = b"/remote/home/user\n"
+        elif "test -f" in cmd:
+            stdout.read.return_value = b"MISSING\n"
+        else:
+            stdout.read.return_value = b""
+        return (None, stdout, stderr)
+
+    ssh.exec_command.side_effect = exec_command
+    return ssh
+
+
+def home_dir_under_tmp(tmp_path: Path, *, mkdir: bool = True) -> Path:
+    home = tmp_path / "home"
+    if mkdir:
+        home.mkdir(parents=True)
+    return home
+
+
+def patch_config_dir(mocker: MockerFixture, home: Path) -> None:
+    config_dir = home / ".config/cronboard"
+    config_dir.mkdir(parents=True)
+    mocker.patch.object(mod, "CONFIG_DIR", config_dir)
+
+
+@pytest.fixture
+def mock_bash(mocker: MockerFixture):
+
+    return mocker.patch.object(mod.shutil, "which", return_value="/bin/bash")
+
+
+@pytest.fixture
+def mock_wrapper_installed(mocker: MockerFixture):
+
+    return mocker.patch.object(
+        mod, "install_wrapper", return_value="/tmp/cron-wrapper.sh"
+    )

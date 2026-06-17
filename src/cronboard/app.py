@@ -3,15 +3,49 @@ from importlib.metadata import version, PackageNotFoundError
 from crontab import CronTab
 import tomlkit
 from pathlib import Path
+from textual import events, on
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.widgets import Footer, Label, Tabs, Tab
-from cronboard_widgets.CronTable import CronTable
+from textual.widgets import (
+    Footer,
+    Label,
+    Tabs,
+    Tab,
+    Button,
+    Input,
+    Checkbox,
+    MaskedInput,
+    RadioButton,
+    RadioSet,
+    Select,
+    Switch,
+    TextArea,
+)
+from cronboard.widgets.CronTable import CronTable
 from textual.containers import Container
-from cronboard_widgets.CronTabs import CronTabs
-from cronboard_widgets.CronCreator import CronCreator
-from cronboard_widgets.CronDeleteConfirmation import CronDeleteConfirmation
-from cronboard_widgets.CronServers import CronServers
+from cronboard.widgets.CronTabs import CronTabs
+from cronboard.screens.CronCreator import CronCreator
+from cronboard.services.messages import CronJobDeleted
+from cronboard.services.logging.logger import delete_logs_for_identificator
+from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
+from cronboard.screens.CronServers import CronServers
+
+
+def is_form_element(element):
+    return isinstance(
+        element,
+        (
+            Input,
+            Checkbox,
+            Button,
+            MaskedInput,
+            RadioButton,
+            RadioSet,
+            Select,
+            Switch,
+            TextArea,
+        ),
+    )
 
 
 class CronBoard(App):
@@ -22,13 +56,18 @@ class CronBoard(App):
 
     BINDINGS = [
         Binding("q,ctrl+q", "quit", "Quit", priority=True),
-        Binding("Tab", "focus_next", "Change Panel"),
+        Binding("Tab", "next_tab_and_focus", "Change Tab"),
     ]
 
     def compose(self) -> ComposeResult:
         version = self.get_version()
         self.config_path = Path.home() / ".config/cronboard/config.toml"
-        yield Label(f"CronBoard v{version}", id="title")
+        yield Label(
+            f"""▄▖      ▄        ▌
+▌ ▛▘▛▌▛▌▙▘▛▌▀▌▛▘▛▌
+▙▖▌ ▙▌▌▌▙▘▙▌█▌▌ ▙▌ v{version}""",
+            id="title",
+        )
         yield Footer()
         self.tabs = CronTabs(
             Tab("Local", id="local"),
@@ -38,6 +77,10 @@ class CronBoard(App):
         self.content_container = Container(id="tab-content")
         yield self.content_container
 
+    @on(CronJobDeleted)
+    def _on_cron_job_deleted(self, event: CronJobDeleted) -> None:
+        delete_logs_for_identificator(event.identificator, event.ssh_client)
+
     def on_mount(self) -> None:
         config = self.load_config()
         saved_theme = config.get("theme", "catppuccin-mocha")
@@ -46,6 +89,8 @@ class CronBoard(App):
         self.local_table = CronTable(id="local-crontable")
         self.content_container.mount(self.local_table)
         self.local_table.display = True
+        self.set_focus(self.local_table)
+        self.tab_disabled = False
 
     def load_config(self):
         if self.config_path.exists():
@@ -82,6 +127,47 @@ class CronBoard(App):
                 self.content_container.mount(self.servers)
             self.local_table.display = False
             self.servers.display = True
+
+    def toggle_tab_enablement(self):
+        self.tab_disabled = not self.tab_disabled
+
+    def on_key(self, event: events.Key) -> None:
+        if event.key != "tab":
+            return
+
+        if self.tab_disabled:
+            event.prevent_default()
+            return
+
+        if is_form_element(self.focused):
+            return
+
+        event.prevent_default()
+        self.action_next_tab_and_focus()
+
+    def action_next_tab_and_focus(self) -> None:
+        tabs = self.tabs
+        tab_widgets = list(tabs.query(Tab))
+        tab_ids = [tab.id for tab in tab_widgets]
+        current = tabs.active
+        index = tab_ids.index(current)
+
+        next_index = (index + 1) % len(tab_ids)
+        next_tab_id = tab_ids[next_index]
+
+        tabs.active = next_tab_id
+
+        self.show_tab_content(next_index)
+        self._focus_active_panel()
+
+    def _focus_active_panel(self) -> None:
+        if self.tabs.active == "local":
+            if self.local_table:
+                self.set_focus(self.local_table)
+
+        elif self.tabs.active == "servers":
+            if self.servers:
+                self.servers.focus_tree()
 
     def action_create_cronjob(
         self, cron: CronTab, remote=False, ssh_client=None, crontab_user=None

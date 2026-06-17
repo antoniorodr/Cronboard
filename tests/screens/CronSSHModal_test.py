@@ -1,8 +1,8 @@
 from types import SimpleNamespace
 import pytest
 from pytest_mock import MockerFixture
-from .conftest import create_event, create_content, make_query_one
-from cronboard_widgets.CronSSHModal import CronSSHModal
+from tests.conftest import create_event, create_content, make_query_one
+from cronboard.screens.CronSSHModal import CronSSHModal
 from textual.containers import Grid
 
 

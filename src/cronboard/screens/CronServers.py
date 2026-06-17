@@ -2,16 +2,16 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Grid
 from textual.widget import Widget
 from textual.widgets import Label, Tree
-from cronboard_widgets.CronTree import CronTree
+from cronboard.widgets.CronTree import CronTree
 from textual.binding import Binding
-from cronboard_widgets.CronSSHModal import CronSSHModal
-from cronboard_widgets.CronTable import CronTable
-from cronboard_widgets.CronDeleteConfirmation import CronDeleteConfirmation
+from cronboard.screens.CronSSHModal import CronSSHModal
+from cronboard.widgets.CronTable import CronTable
+from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
 import paramiko
-from pathlib import Path
 import tomllib
 import tomlkit
-from cronboard_encryption.CronEncrypt import decrypt_password, encrypt_password
+from cronboard.services.encryption.CronEncrypt import decrypt_password, encrypt_password
+from cronboard.config import CONFIG_FILE
 
 
 class CronServers(Widget):
@@ -20,11 +20,11 @@ class CronServers(Widget):
         Binding("D", "delete_server", "Delete Server"),
         Binding("c", "connect_server", "Connect"),
         Binding("d", "disconnect_server", "Disconnect Server"),
+        Binding("J", "jump", "Switch Panel"),
     ]
 
     def __init__(self) -> None:
         super().__init__()
-        self.servers_path = Path.home() / ".config/cronboard/servers.toml"
         self.servers = self.load_servers()
         self.current_ssh_client = None
         self.current_cron_table = None
@@ -147,11 +147,10 @@ class CronServers(Widget):
         if self.current_ssh_client:
             try:
                 self.current_ssh_client.close()
+                self.show_disconnected_message()
             except:
                 pass
             self.current_ssh_client = None
-
-        self.show_disconnected_message()
 
         for server_info in self.servers.values():
             server_info["connected"] = False
@@ -161,13 +160,15 @@ class CronServers(Widget):
 
         if connected_server_name:
             self.notify(f"Disconnected from server {connected_server_name}")
+        else:
+            self.notify("You are not connected to any server")
 
         self.save_servers()
 
     def load_servers(self) -> dict:
-        if self.servers_path.exists():
+        if CONFIG_FILE.exists():
             try:
-                with self.servers_path.open("rb") as f:
+                with CONFIG_FILE.open("rb") as f:
                     loaded_servers = tomllib.load(f)
 
                 for server_id, server_info in loaded_servers.items():
@@ -200,7 +201,7 @@ class CronServers(Widget):
 
     def save_servers(self) -> None:
         try:
-            self.servers_path.parent.mkdir(parents=True, exist_ok=True)
+            CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
             toml_safe_servers = {}
             for server_id, server_info in self.servers.items():
                 encrypted_password = ""
@@ -220,7 +221,7 @@ class CronServers(Widget):
                     else server_info["username"],
                 }
 
-            with self.servers_path.open("w", encoding="utf-8") as f:
+            with CONFIG_FILE.open("w", encoding="utf-8") as f:
                 tomlkit.dump(toml_safe_servers, f)
         except Exception as e:
             self.notify(f"❌ Error: Failed to save servers: {e}")
@@ -300,3 +301,21 @@ class CronServers(Widget):
             message=f"Are you sure you want to delete the server '{server_info['name']}' ?",
         )
         self.app.push_screen(confirmation_modal, on_delete_confirmed)
+
+    def focus_tree(self):
+        try:
+            self._focus_tree()
+        except:
+            self.call_after_refresh(self._focus_tree)
+
+    def _focus_tree(self):
+        tree = self.query_one("#servers-tree", Tree)
+        if tree:
+            tree.focus()
+
+    def action_jump(self) -> None:
+        servers_tree = self.query_one("#servers-tree", Tree)
+        if servers_tree.has_focus and self.current_cron_table:
+            self.current_cron_table.focus()
+        else:
+            servers_tree.focus()

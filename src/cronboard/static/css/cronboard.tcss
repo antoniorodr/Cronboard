@@ -7,7 +7,7 @@
     scrollbar-background-active: $surface-darken-1;
 }
 
-CronCreator, CronDeleteConfirmation, CronSSHModal, CronInputSearch {
+CronCreator, CronDeleteConfirmation, CronSSHModal, CronInputSearch, LogViewModal {
     align: center middle;
 }
 
@@ -34,7 +34,15 @@ CronCreator, CronDeleteConfirmation, CronSSHModal, CronInputSearch {
     text-style: bold;
 }
 
-#servers-tree {
+.focusable {
+    border: round $primary 50%;
+
+    &:focus-within {
+        border: round $primary;
+    }
+}
+
+#servers-tree, #log-list {
     width: 18%;
     border: round $primary 50%;
 
@@ -98,10 +106,12 @@ CronTabs {
 #error {
     color: $error;
     padding-top: 1;
+    min-height: 2;
 }
 
 #label_desc {
-    margin-top: 1;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .success {
@@ -122,11 +132,18 @@ CronTabs {
     border: thick $primary;
 }
 
+LogViewModal #dialog {
+    width: 96%;
+    height: 94%;
+    max-width: 100%;
+    min-height: 28;
+}
+
 #content {
     align: center middle;
     width: 100%;
     height: auto;
-    padding: 2;
+    padding: 1 2 0 2;
 }
 
 #content Label {
@@ -143,11 +160,6 @@ CronTabs {
     }
 }
 
-#label1 {
-    color: $text;
-    text-style: bold;
-}
-
 #label2 {
     color: $text-muted;
     margin-bottom: 1;
@@ -156,7 +168,7 @@ CronTabs {
 #label_special {
     color: $secondary;
     text-style: bold;
-    margin-top: 1;
+    margin-top: 0;
     margin-bottom: 0;
 }
 
@@ -169,19 +181,6 @@ CronTabs {
 
 #label_slash {
     margin-bottom: 2;
-}
-
-#label3 {
-    color: $text;
-    text-style: bold;
-    margin-top: 2;
-}
-
-#label4 {
-    color: $text;
-    text-style: bold;
-    margin-top: 2;
-    padding-top: 2;
 }
 
 #expression {
@@ -197,10 +196,42 @@ CronTabs {
     align: center middle;
     width: 100%;
     height: auto;
-    margin-top: 2;
+    margin-top: 1;
 }
 
 #button-row Button {
     margin: 0 1;
 }
 
+.form-label {
+    color: $text;
+    text-style: bold;
+}
+
+.mt-2 {
+    margin-top: 2;
+}
+
+.pt-2 {
+    padding-top: 2;
+}
+
+VirtualLogFileList {
+    background: $surface;
+    color: $text;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    &:focus {
+        background-tint: $foreground 5%;
+    }
+}
+
+VirtualLogLines {
+    background: $surface;
+    color: $text;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    &:focus {
+        background-tint: $foreground 5%;
+    }
+}

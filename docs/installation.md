@@ -3,7 +3,7 @@
 Before installing Cronboard, make sure `cron` is available on your machine:
 
 ```bash
-crontab -l
+where crontab
 ```
 
 If this command returns an error saying `cron` is not installed, install it through your system's package manager first. Cronboard only manages existing crontabs; it does not replace the system cron daemon.
@@ -22,10 +22,10 @@ brew install cronboard
 
 ## uv
 
-Good choice if you already use [uv](https://github.com/astral-sh/uv) for Python tooling. Installs the latest version from the repository.
+Good choice if you already use [uv](https://github.com/astral-sh/uv) for Python tooling. Installs the latest version from [PyPI](https://pypi.org/project/cronboard/). You can update the install with `uv tool update cronboard` when new versions are released.
 
 ```bash
-uv tool install git+https://github.com/antoniorodr/cronboard
+uv tool install cronboard
 ```
 
 ---

@@ -182,3 +182,4 @@ cliff.toml
 
 # script
 update_dependencies.py
+test-server/

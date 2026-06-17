@@ -1,0 +1,171 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="cronboard-home">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-terminal">
+        <div class="term-bar">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          <span class="term-path">~</span>
+        </div>
+        <div class="term-body">
+          <div class="term-line term-art">CronBoard</div>
+          <div class="term-line term-empty"></div>
+          <div class="term-line term-dim"><span class="prompt">├─</span> Local cron jobs</div>
+          <div class="term-line term-dim"><span class="prompt">├─</span> Remote servers</div>
+          <div class="term-line term-dim"><span class="prompt">└─</span> Search</div>
+          <div class="term-line"><span class="prompt">$</span> <span class="cursor">█</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <h1 class="hero-title">Manage cron jobs<br>from the terminal</h1>
+      <p class="hero-subtitle">A keyboard-driven TUI dashboard for local and remote cron management. Built with <a href=https://textual.textualize.io target="_blank">Textual</a>. No web UI, no extra services.</p>
+      <div class="hero-announcement-card">
+        <span class="announcement-badge">✦</span>
+        <p class="announcement-text">Selected as <a href=https://terminaltrove.com/cronboard target="_blank">Terminal Trove Tool of the Week</a> — October 28th, 2025</p>
+      </div>
+      <div class="hero-actions">
+        <a href="installation/" class="btn btn-primary">Get Started</a>
+      </div>
+      <div class="hero-install">
+        <code class="install-cmd">
+          <span class="prompt">$</span> brew install cronboard
+          <button class="copy-btn" data-copy="brew install cronboard" title="Copy">
+            <svg width="14" height="14" fill="currentColor"><use href="images/sprites.svg#icon-copy"/></svg>
+          </button>
+        </code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="demo-section">
+    <div class="demo-window">
+      <div class="demo-header">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="demo-title">cronboard</span>
+      </div>
+      <div class="demo-body">
+        <img src="images/interface-ov.gif" alt="Cronboard interface demo" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="features-grid">
+      <div class="feature-card">
+        <a href="features/local-cron/" class="feature-card-link" aria-label="Local Cron documentation"></a>
+        <div class="feature-head">
+          <span class="feature-sym">◷</span>
+          <span class="feature-name">Local Cron</span>
+        </div>
+        <p class="feature-desc">Create, edit, delete, pause and resume cron jobs. Human-readable cron descriptions in real time.</p>
+        <div class="feature-gif">
+          <img src="images/create-job.gif" alt="Creating a cron job" loading="lazy">
+        </div>
+      </div>
+      <div class="feature-card">
+        <a href="features/remote-servers/" class="feature-card-link" aria-label="Remote Servers documentation"></a>
+        <div class="feature-head">
+          <span class="feature-sym">⌘</span>
+          <span class="feature-name">Remote Servers</span>
+        </div>
+        <p class="feature-desc">Connect via SSH with key-based auth. Manage crontabs for any user on any server.</p>
+        <div class="feature-gif">
+          <img src="images/remote-connect.gif" alt="Connecting to remote server" loading="lazy">
+        </div>
+      </div>
+      <div class="feature-card">
+        <a href="features/search/" class="feature-card-link" aria-label="Search documentation"></a>
+        <div class="feature-head">
+          <span class="feature-sym">⌕</span>
+          <span class="feature-name">Search</span>
+        </div>
+        <p class="feature-desc">Find cron jobs by keyword. Search highlights matches across all your servers.</p>
+        <div class="feature-gif">
+          <img src="images/search.gif" alt="Searching cron jobs" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation -->
+  <section class="install-section">
+    <div class="install-terminal">
+      <div class="term-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="term-path">~/install</span>
+      </div>
+      <div class="term-body">
+        <div class="install-tabs">
+          <span class="tab active" data-tab="homebrew">Homebrew</span>
+          <span class="tab" data-tab="aur">AUR</span>
+          <span class="tab" data-tab="uv">UV</span>
+          <span class="tab" data-tab="nix">Nix</span>
+          <span class="tab" data-tab="source">Source</span>
+        </div>
+        <div class="install-panels">
+          <div class="install-panel active" data-panel="homebrew">
+            <div class="term-line"><span class="comment"># Install</span></div>
+            <div class="term-line term-cmd"><span class="term-cmd-text"><span class="prompt">$</span> brew install cronboard</span><button class="term-copy" data-copy="brew install cronboard"><svg width="12" height="12" fill="currentColor"><use href="images/sprites.svg#icon-copy"/></svg></button></div>
+          </div>
+          <div class="install-panel" data-panel="aur">
+            <div class="term-line"><span class="comment"># Install</span></div>
+            <div class="term-line term-cmd"><span class="term-cmd-text"><span class="prompt">$</span> yay -S cronboard</span><button class="term-copy" data-copy="yay -S cronboard"><svg width="12" height="12" fill="currentColor"><use href="images/sprites.svg#icon-copy"/></svg></button></div>
+          </div>
+          <div class="install-panel" data-panel="uv">
+            <div class="term-line"><span class="comment"># Install</span></div>
+            <div class="term-line term-cmd"><span class="term-cmd-text"><span class="prompt">$</span> uv tool install cronboard</span><button class="term-copy" data-copy="uv tool install cronboard"><svg width="12" height="12" fill="currentColor"><use href="images/sprites.svg#icon-copy"/></svg></button></div>
+          </div>
+          <div class="install-panel" data-panel="nix">
+            <div class="term-line"><span class="comment"># Install</span></div>
+            <div class="term-line term-cmd"><span class="term-cmd-text"><span class="prompt">$</span> nix profile add github:antoniorodr/cronboard</span><button class="term-copy" data-copy="nix profile install github:antoniorodr/cronboard"><svg width="12" height="12" fill="currentColor"><use href="images/sprites.svg#icon-copy"/></svg></button></div>
+          </div>
+          <div class="install-panel" data-panel="source">
+            <div class="term-line"><span class="comment"># Clone</span></div>
+            <div class="term-line term-cmd"><span class="term-cmd-text"><span class="prompt">$</span> git clone https://github.com/antoniorodr/cronboard</span></div>
+            <div class="term-line"><span class="comment"># Change Directory</span></div>
+            <div class="term-line term-cmd"><span class="term-cmd-text"><span class="prompt">$</span> cd cronboard</span></div>
+            <div class="term-line term-empty"></div>
+            <div class="term-line"><span class="comment"># Install</span></div>
+            <div class="term-line term-cmd"><span class="term-cmd-text"><span class="prompt">$</span> pip install . </span></div>
+            <div class="term-line term-copy-all"><button class="term-copy-all-btn" data-copy="git clone https://github.com/antoniorodr/cronboard.git
+cd cronboard
+
+uv sync
+
+uv run cronboard"><svg width="12" height="12" fill="currentColor"><use href="images/sprites.svg#icon-copy"/></svg> Copy all</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community -->
+  <section class="community">
+    <p class="community-text">Found a bug, have a feature request, or want to contribute?</p>
+    <div class="community-actions">
+      <a href="{{ config.repo_url }}" class="btn btn-ghost" target="_blank" rel="noopener">Repository</a>
+      <a href="{{ config.repo_url }}/issues" class="btn btn-ghost" target="_blank" rel="noopener">Report an Issue</a>
+      <a href="{{ config.repo_url }}/pulls" class="btn btn-ghost" target="_blank" rel="noopener">Submit a PR</a>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <h2>Ready to simplify your cron management?</h2>
+    <a href="installation/" class="btn btn-primary btn-large">Install Cronboard</a>
+  </section>
+</div>
+
+{% endblock %}

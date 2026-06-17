@@ -44,7 +44,7 @@
 
         cronboard = python.pkgs.buildPythonApplication {
           pname = "cronboard";
-          version = "0.5.1";
+          version = builtins.elemAt (builtins.match ".*version = \"([^\"]+)\".*" (builtins.readFile ./pyproject.toml)) 0;
           pyproject = true;
 
           src = ./.;

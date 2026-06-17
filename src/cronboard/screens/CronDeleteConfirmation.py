@@ -1,6 +1,8 @@
 from textual.app import ComposeResult
 from crontab import CronTab
 from textual.binding import Binding
+
+from cronboard.services.messages import CronJobDeleted
 from textual.widgets import Button, Label
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import ModalScreen
@@ -63,21 +65,36 @@ class CronDeleteConfirmation(ModalScreen[bool]):
             return
 
         if self.job and self.cron:
+            comment = getattr(self.job, "comment", None)
+            ident = (
+                comment.strip()
+                if isinstance(comment, str) and comment.strip()
+                else None
+            )
+
             self.cron.remove(self.job)
 
             if self.remote and self.ssh_client:
                 self.write_remote_crontab()
             else:
                 self.cron.write()
+
+            if ident and self.is_mounted:
+                self.app.post_message(
+                    CronJobDeleted(
+                        ident,
+                        ssh_client=self.ssh_client if self.remote else None,
+                    )
+                )
         self.dismiss(True)
 
     def write_remote_crontab(self):
         """Writes the current SSH cron table back to the remote server."""
-        if not (self.remote and self.ssh_client and self.cron):
+        if not (self.remote and self.ssh_client):
             return False
 
         try:
-            new_crontab_content = self.cron.render()
+            new_crontab_content = self.cron.render() or ""
 
             crontab_cmd = (
                 f"crontab -u {self.crontab_user} -"

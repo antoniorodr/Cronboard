@@ -1,4 +1,4 @@
-# Keyboard Shortcuts
+# Keyboard Keybinds
 
 Cronboard is fully keyboard-driven. Below is a complete reference of all available key bindings.
 
@@ -9,7 +9,7 @@ Cronboard is fully keyboard-driven. Below is a complete reference of all availab
 | Key | Action |
 |---|---|
 | `q` / `Ctrl+Q` | Quit Cronboard |
-| `Tab` | Switch focus to the next panel |
+| `Tab` | Switch focus to the next tab |
 
 ---
 
@@ -33,6 +33,8 @@ Cronboard is fully keyboard-driven. Below is a complete reference of all availab
 | `D` | Delete the selected cron job |
 | `p` | Pause / resume the selected cron job |
 | `r` | Refresh the cron job list |
+| `L` | View the execution logs of the selected cron job |
+
 
 ### Search
 
@@ -54,6 +56,7 @@ Cronboard is fully keyboard-driven. Below is a complete reference of all availab
 | `d` | Disconnect from the current server |
 | `D` | Delete the selected server |
 | `j` / `k` | Navigate the server tree |
+| `J` | Jump to the crontab of the selected server |
 
 ---
 
