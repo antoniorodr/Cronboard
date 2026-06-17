@@ -4,7 +4,6 @@ from textual.app import App, ComposeResult
 
 from cronboard.widgets.LogView import LogView, VirtualLogFileList, VirtualLogLines
 
-
 _LOG_VIEW = "cronboard.widgets.LogView"
 
 

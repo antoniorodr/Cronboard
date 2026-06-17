@@ -78,6 +78,40 @@ pytest
 
 Coverage is configured in `pyproject.toml` and will output a summary in the terminal as well as a `coverage.lcov` file.
 
+## Linting and formatting
+
+This project uses [Ruff](https://docs.astral.sh/ruff/) for linting and formatting. Configuration lives in `pyproject.toml` under `[tool.ruff]`.
+
+After `uv sync --group dev`, run:
+
+```bash
+uv run ruff check .
+uv run ruff format .
+```
+
+`ruff check` reports issues; add `--fix` to apply safe auto-fixes. `ruff format` reformats code (use `ruff format --check .` in CI-style checks without writing files).
+
+Pull requests should pass Ruff the same way CI does (`ruff check .` and `ruff format --check .`).
+
+## Pre-commit
+
+To run the same Ruff checks as CI plus a fast test pass (`pytest` without coverage) before each commit, install the [pre-commit](https://pre-commit.com/) Git hooks after syncing dev dependencies:
+
+```bash
+uv sync --group dev
+uv run pre-commit install
+```
+
+Hooks are defined in `.pre-commit-config.yaml`. Run them manually on all files with:
+
+```bash
+uv run pre-commit run --all-files
+```
+
+Python-only commits trigger the test hook; commits that touch only non-Python files skip it.
+
+CI runs the same `.pre-commit-config.yaml` checks for Ruff only (the pytest hook is skipped there so the workflow runs a single `pytest` pass with coverage). To skip a hook locally, use the `SKIP` environment variable ([pre-commit docs](https://pre-commit.com/#temporarily-disabling-hooks)), for example `SKIP=pytest git commit`.
+
 ## Commit Style
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/) if possible:

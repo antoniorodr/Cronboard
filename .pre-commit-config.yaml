@@ -1,0 +1,18 @@
+# https://pre-commit.com — install: `uv run pre-commit install`
+default_install_hook_types: [pre-commit]
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.12
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+        args: [--check]
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest (no coverage)
+        entry: uv run pytest tests/ -q --no-cov
+        language: system
+        pass_filenames: false
+        types: [python]

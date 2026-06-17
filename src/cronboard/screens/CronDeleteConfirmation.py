@@ -1,11 +1,11 @@
-from textual.app import ComposeResult
 from crontab import CronTab
+from textual.app import ComposeResult
 from textual.binding import Binding
-
-from cronboard.services.messages import CronJobDeleted
-from textual.widgets import Button, Label
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import ModalScreen
+from textual.widgets import Button, Label
+
+from cronboard.services.messages import CronJobDeleted
 
 
 class CronDeleteConfirmation(ModalScreen[bool]):

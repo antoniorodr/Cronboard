@@ -9,6 +9,7 @@
 ## Checklist
 
 - [ ] I have read [CONTRIBUTING.md](../CONTRIBUTING.md) and this PR follows the guidelines
+- [ ] `uv run ruff check .` passes locally
 - [ ] A human has reviewed the **entire diff** of this PR, every line of code
 - [ ] A human understands the changes and can explain why this approach is correct
 - [ ] This PR doesn't have AI-generated boilerplate or co-author lines

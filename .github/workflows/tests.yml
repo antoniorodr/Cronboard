@@ -19,6 +19,10 @@ jobs:
           enable-cache: true
       - name: uv sync
         run: uv sync
+      - name: Pre-commit (Ruff; pytest skipped — next step runs tests with coverage)
+        env:
+          SKIP: pytest
+        run: uv run pre-commit run --all-files
       - name: Run tests
         run: |
           uv run pytest -r w tests/

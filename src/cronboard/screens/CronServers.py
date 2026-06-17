@@ -1,17 +1,19 @@
+import tomllib
+
+import paramiko
+import tomlkit
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Grid
+from textual.binding import Binding
+from textual.containers import Grid, Horizontal
 from textual.widget import Widget
 from textual.widgets import Label, Tree
-from cronboard.widgets.CronTree import CronTree
-from textual.binding import Binding
-from cronboard.screens.CronSSHModal import CronSSHModal
-from cronboard.widgets.CronTable import CronTable
-from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
-import paramiko
-import tomllib
-import tomlkit
-from cronboard.services.encryption.CronEncrypt import decrypt_password, encrypt_password
+
 from cronboard.config import CONFIG_FILE
+from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
+from cronboard.screens.CronSSHModal import CronSSHModal
+from cronboard.services.encryption.CronEncrypt import decrypt_password, encrypt_password
+from cronboard.widgets.CronTable import CronTable
+from cronboard.widgets.CronTree import CronTree
 
 
 class CronServers(Widget):
@@ -83,7 +85,8 @@ class CronServers(Widget):
             if self.current_ssh_client:
                 try:
                     self.current_ssh_client.close()
-                except:
+                except Exception as e:
+                    print(f"Error: {e}")
                     pass
 
             self.current_ssh_client = ssh_client
@@ -148,7 +151,8 @@ class CronServers(Widget):
             try:
                 self.current_ssh_client.close()
                 self.show_disconnected_message()
-            except:
+            except Exception as e:
+                print(f"Error: {e}")
                 pass
             self.current_ssh_client = None
 
@@ -305,7 +309,8 @@ class CronServers(Widget):
     def focus_tree(self):
         try:
             self._focus_tree()
-        except:
+        except Exception as e:
+            print(f"Error: {e}")
             self.call_after_refresh(self._focus_tree)
 
     def _focus_tree(self):
