@@ -14,6 +14,8 @@ from cronboard.widgets.LogView import LogViewModal
 
 
 class CronTable(DataTable):
+    NO_ID_LABEL = "No ID"
+    
     BINDINGS = [
         Binding("/", "cron_search", "Search"),
         Binding("escape", "clear_search", "Clear Search"),
@@ -28,6 +30,7 @@ class CronTable(DataTable):
         Binding("r", "refresh", "Refresh"),
         Binding("p", "pause_cronjob", "Pause Toggle"),
         Binding("e", "edit_cronjob", "Edit"),
+        Binding("d", "duplicate_cronjob", "Duplicate"),
         Binding("L", "view_logs", "View Logs"),
     ]
 
@@ -85,6 +88,7 @@ class CronTable(DataTable):
             "edit_cronjob",
             "delete_cronjob",
             "pause_cronjob",
+            "duplicate_cronjob",
             "cursor_up",
             "cursor_down",
             "cursor_left",
@@ -103,7 +107,7 @@ class CronTable(DataTable):
             expr = job.slices.render()
             cmd = command_without_wrapper(job.command)
             log_enabled = has_wrapper(job.command)
-            identificator = job.comment if job.comment else "No ID"
+            identificator = job.comment if job.comment else self.NO_ID_LABEL
             try:
                 active_status = "Active" if job.is_enabled() else "Paused"
                 schedule = job.schedule(date_from=datetime.now())
@@ -435,6 +439,35 @@ class CronTable(DataTable):
         except Exception as e:
             print(f"❌ Error writing remote crontab: {e}")
             return False
+
+    def action_duplicate_cronjob(self) -> None:
+        """Duplicate the selected cronjob and open in edit mode."""
+        row = self.get_row_at(self.cursor_row)
+        identificator = row[0]
+        expr = row[1]
+        cmd = row[2]
+        log_enabled = row[3] == "True"  # Convert string to bool
+
+        # Generate new ID with "_copy" suffix (no spaces allowed in IDs)
+        if identificator == self.NO_ID_LABEL:
+            new_identificator = "No_ID_copy"
+        else:
+            new_identificator = f"{identificator}_copy"
+
+        # Open editor with duplicated job data
+        used_cron = self.ssh_cron if self.remote and self.ssh_client else self.cron
+        self.app.action_create_cronjob(
+            used_cron,
+            remote=self.remote,
+            ssh_client=self.ssh_client,
+            crontab_user=self.crontab_user,
+            duplicate_data={
+                "identificator": new_identificator,
+                "expression": expr,
+                "command": cmd,
+                "log_enabled": log_enabled,
+            },
+        )
 
     def action_view_logs(self) -> None:
         """View logs for the selected cronjob."""
