@@ -22,6 +22,7 @@ Full documentation is available at [cronboard.dev](https://cronboard.dev).
 - Check cron jobs, view the logs, and detect potential issues when running
 - Autocompletion for paths when creating or editing cron jobs
 - Create cron jobs with validation and human-readable feedback
+- Duplicate existing cron jobs with a single keystroke (preserves schedule, command, and logging)
 - Pause/resume, edit and delete cron jobs
 - View formatted last and next run times
 - Accept `special expressions` like `@daily`, `@yearly`, and `@monthly`
@@ -73,6 +74,18 @@ Cronboard includes a footer, provided by [Textual](https://textual.textualize.io
 Path autocompletion when creating or editing cron jobs helps you enter file paths faster.
 
 The default starting point for autocompletion is the home directory of the user whose cron jobs you are managing. Accept a suggestion with the `Tab` key.
+
+### 📋 Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `c` | Create new cron job |
+| `e` | Edit selected cron job |
+| `d` | Duplicate selected cron job |
+| `D` | Delete selected cron job |
+| `p` | Pause/resume cron job |
+| `/` | Search cron jobs |
+| `L` | View logs for selected job |
 
 ## ❤️ Do you like my work?
 

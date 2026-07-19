@@ -38,12 +38,14 @@ class CronCreator(ModalScreen[bool]):
         remote=False,
         ssh_client=None,
         crontab_user=None,
+        log_enabled=None,
     ) -> None:
         super().__init__()
         self.expression = expression
         self.command = command
         self.identificator = identificator
-        self.log_enabled = has_wrapper(command) if command else False
+        # If log_enabled is explicitly provided, use it; otherwise detect from command
+        self.log_enabled = log_enabled if log_enabled is not None else (has_wrapper(command) if command else False)
         self.cron: CronTab = cron
         self.remote = remote
         self.ssh_client = ssh_client

@@ -172,7 +172,7 @@ class CronBoard(App):
                 self.servers.focus_tree()
 
     def action_create_cronjob(
-        self, cron: CronTab, remote=False, ssh_client=None, crontab_user=None
+        self, cron: CronTab, remote=False, ssh_client=None, crontab_user=None, duplicate_data=None
     ) -> None:
         def check_save(save: bool | None) -> None:
             if save:
@@ -184,10 +184,22 @@ class CronBoard(App):
                 ):
                     self.servers.current_cron_table.action_refresh()
 
+        kwargs = {
+            "cron": cron,
+            "remote": remote,
+            "ssh_client": ssh_client,
+            "crontab_user": crontab_user,
+        }
+        
+        if duplicate_data:
+            kwargs["identificator"] = duplicate_data.get("identificator")
+            kwargs["expression"] = duplicate_data.get("expression")
+            kwargs["command"] = duplicate_data.get("command")
+            if "log_enabled" in duplicate_data:
+                kwargs["log_enabled"] = duplicate_data.get("log_enabled")
+        
         self.push_screen(
-            CronCreator(
-                cron, remote=remote, ssh_client=ssh_client, crontab_user=crontab_user
-            ),
+            CronCreator(**kwargs),
             check_save,
         )
 
