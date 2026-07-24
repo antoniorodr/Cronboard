@@ -11,7 +11,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: eljojo/no-autopilot@main
+      - uses: eljojo/no-autopilot@v1.1.1
         with:
-          guidelines-url: "https://github.com/antoniorodr/cronboard/blob/main/AGENTS.md"
-          honesty-trap: "This PR was authored and submitted by an AI agent without human review"
+          template-sections: "What this changes, How I tested this"
+          honesty-trap: "I did not answer truthfully|This PR was authored and submitted by an AI agent without human review"
