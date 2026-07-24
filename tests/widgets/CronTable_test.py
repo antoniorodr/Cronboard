@@ -1,37 +1,6 @@
 import pytest
 from pytest_mock import MockerFixture
-from unittest.mock import PropertyMock
 from cronboard.widgets.CronTable import CronTable
-
-
-@pytest.fixture
-def table() -> CronTable:
-    """A bare CronTable instance for tests that don't need special setup."""
-    return CronTable()
-
-
-@pytest.fixture
-def table_with_row_count(mocker: MockerFixture, row_count: int = 0) -> CronTable:
-    """CronTable with row_count mocked to a specific value."""
-    table = CronTable()
-    mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=row_count))
-    return table
-
-
-@pytest.fixture
-def empty_table(mocker: MockerFixture) -> CronTable:
-    """CronTable with row_count=0."""
-    table = CronTable()
-    mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=0))
-    return table
-
-
-@pytest.fixture
-def table_with_rows(mocker: MockerFixture) -> CronTable:
-    """CronTable with row_count=3."""
-    table = CronTable()
-    mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=3))
-    return table
 
 
 class TestCheckAction:
@@ -58,54 +27,20 @@ class TestCheckAction:
 
 
 class TestHighlightText:
-    def test_highlights_middle_of_text(self, table: CronTable):
-        result = table._highlight_text("hello world", "world")
-        assert "world" in str(result)
-
-    def test_highlight_case_insensitive(self, table: CronTable):
-        result = table._highlight_text("Hello World", "world")
-        assert str(result)
-
-    def test_no_match_returns_original(self, table: CronTable):
-        result = table._highlight_text("hello world", "xyz")
-        assert str(result) == "hello world"
-
-    def test_empty_query(self, table: CronTable):
-        result = table._highlight_text("hello", "")
-        assert str(result) == "hello"
-
-    def test_empty_text(self, table: CronTable):
-        result = table._highlight_text("", "hello")
-        assert str(result) == ""
-
-    def test_multiple_matches(self, table: CronTable):
-        result = table._highlight_text("foo bar foo baz", "foo")
-        assert "foo" in str(result)
+    @pytest.mark.parametrize("text, query, expected", [
+        ("hello world", "world", "world"),                 # middle match
+        ("Hello World", "world", "World"),                 # case-insensitive match
+        ("hello world", "xyz", "hello world"),             # no match — unchanged
+        ("hello", "", "hello"),                            # empty query — unchanged
+        ("", "hello", ""),                                 # empty text — unchanged
+        ("foo bar foo baz", "foo", "foo"),                 # multiple matches
+    ])
+    def test_highlight_text(self, table: CronTable, text: str, query: str, expected: str):
+        result = table._highlight_text(text, query)
+        assert expected in str(result)
 
 
 class TestApplySearch:
-    @pytest.fixture
-    def table_with_data(self, mocker: MockerFixture):
-        table = CronTable()
-        table._rows_data = [
-            ("job-1", "* * * * *", "/usr/bin/backup.sh", "True",
-             "22.07.2026 at 10:00", "22.07.2026 at 11:00", "Active"),
-            ("job-2", "0 */2 * * *", "/usr/bin/cleanup.sh", "False",
-             "22.07.2026 at 09:00", "22.07.2026 at 12:00", "Paused"),
-            ("db-backup", "0 0 * * *", "/usr/bin/db_dump.sh", "True",
-             "21.07.2026 at 00:00", "23.07.2026 at 00:00", "Active"),
-        ]
-        table._search_matches = []
-        table._search_index = -1
-        table._search_query = ""
-        mocker.patch.object(table, "_restore_cells")
-        mocker.patch.object(table, "_highlight_matches")
-        mocker.patch.object(table, "move_cursor")
-        mocker.patch.object(table, "notify")
-        mocker.patch.object(table, "update_cell_at")
-        mocker.patch.object(table, "clear")
-        return table
-
     def test_search_matches_identificator(self, table_with_data):
         table_with_data.apply_search("backup")
         assert table_with_data._search_query == "backup"
@@ -136,22 +71,6 @@ class TestApplySearch:
 
 
 class TestSearchNavigation:
-    @pytest.fixture
-    def table_with_matches(self, mocker: MockerFixture):
-        table = CronTable()
-        table._search_matches = [2, 5, 8]
-        table._search_index = 0
-        mocker.patch.object(table, "move_cursor")
-        return table
-
-    @pytest.fixture
-    def table_no_matches(self, mocker: MockerFixture):
-        table = CronTable()
-        table._search_matches = []
-        table._search_index = -1
-        mocker.patch.object(table, "move_cursor")
-        return table
-
     def test_search_next_cycles_forward(self, table_with_matches):
         table_with_matches.action_search_next()
         assert table_with_matches._search_index == 1
@@ -190,15 +109,6 @@ class TestSearchNavigation:
 
 
 class TestClearSearch:
-    @pytest.fixture
-    def table_with_search_state(self, mocker: MockerFixture):
-        table = CronTable()
-        table._search_query = "backup"
-        table._search_matches = [0, 2]
-        table._search_index = 0
-        mocker.patch.object(table, "_restore_cells")
-        return table
-
     def test_clears_all_search_state(self, table_with_search_state):
         table_with_search_state.action_clear_search()
         assert table_with_search_state._search_query == ""
@@ -211,20 +121,6 @@ class TestClearSearch:
 
 
 class TestFindIfCronjobExists:
-    @pytest.fixture
-    def table_and_job(self, mocker: MockerFixture) -> tuple[CronTable, ...]:
-        """Sets up a CronTable with one cron job (test-job/echo hello)."""
-        table = CronTable()
-        job = mocker.MagicMock()
-        job.comment = "test-job"
-        job.command = "echo hello"
-        cron = mocker.MagicMock()
-        cron.__iter__.return_value = iter([job])
-        table.cron = cron
-        table.remote = False
-        table.ssh_client = None
-        return table, job
-
     def test_finds_job_by_comment_and_command(self, table_and_job):
         table, _ = table_and_job
         result = table.find_if_cronjob_exists("test-job", "echo hello")
@@ -275,39 +171,12 @@ class TestFindIfCronjobExists:
         table.cron = cron
         table.remote = False
         table.ssh_client = None
-
         result = table.find_if_cronjob_exists("test-job", "echo hello")
         assert result is None
 
 
 class TestParseCron:
     """Cron parsing tests — build the table once per test since setup is extensive."""
-
-    @pytest.fixture
-    def chronicle(self, mocker: MockerFixture) -> dict:
-        """Returns mock objects for a single-job cron parse setup."""
-        job = mocker.MagicMock()
-        schedule = mocker.MagicMock()
-        schedule.get_next.return_value = mocker.MagicMock(
-            strftime=lambda fmt: "22.07.2026 at 12:00"
-        )
-        schedule.get_prev.return_value = mocker.MagicMock(
-            strftime=lambda fmt: "22.07.2026 at 11:00"
-        )
-        job.schedule.return_value = schedule
-        cron = mocker.MagicMock()
-        cron.__iter__.return_value = iter([job])
-
-        table = CronTable()
-        mocker.patch("cronboard.widgets.CronTable.has_wrapper", return_value=False)
-        mocker.patch("cronboard.widgets.CronTable.command_without_wrapper", side_effect=lambda x: x)
-        mocker.patch.object(table, "add_row")
-        mocker.patch.object(table, "_restore_cells")
-        mocker.patch.object(table, "_highlight_matches")
-        mocker.patch.object(table, "move_cursor")
-        mocker.patch.object(table, "update_cell_at")
-
-        return {"table": table, "cron": cron, "job": job}
 
     def _make_schedule(self, mocker, next_str, prev_str):
         """Helper to create a schedule mock with fixed strftime outputs."""
