@@ -13,3 +13,4 @@
 - [ ] A human understands the changes and can explain why this approach is correct
 - [ ] This PR doesn't have AI-generated boilerplate or co-author lines
 - [ ] This PR was authored and submitted by an AI agent without human review
+- [ ] I did not answer truthfully to ALL the above checkboxes
