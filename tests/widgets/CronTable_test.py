@@ -1,83 +1,86 @@
 import pytest
 from pytest_mock import MockerFixture
-from unittest.mock import MagicMock, PropertyMock
+from unittest.mock import PropertyMock
 from cronboard.widgets.CronTable import CronTable
 
 
+@pytest.fixture
+def table() -> CronTable:
+    """A bare CronTable instance for tests that don't need special setup."""
+    return CronTable()
+
+
+@pytest.fixture
+def table_with_row_count(mocker: MockerFixture, row_count: int = 0) -> CronTable:
+    """CronTable with row_count mocked to a specific value."""
+    table = CronTable()
+    mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=row_count))
+    return table
+
+
+@pytest.fixture
+def empty_table(mocker: MockerFixture) -> CronTable:
+    """CronTable with row_count=0."""
+    table = CronTable()
+    mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=0))
+    return table
+
+
+@pytest.fixture
+def table_with_rows(mocker: MockerFixture) -> CronTable:
+    """CronTable with row_count=3."""
+    table = CronTable()
+    mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=3))
+    return table
+
+
 class TestCheckAction:
-    def test_disabled_when_empty(self, mocker: MockerFixture):
-        """Cursor and search actions are disabled when the table has no rows."""
-        table = CronTable()
-        mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=0))
+    """Actions are guarded by row count — empty tables disable navigation/search/edit."""
 
-        # Actions that are guarded by check_action (return not is_empty)
-        guarded_actions = [
-            "cron_search", "clear_search", "next_match", "prev_match",
-            "edit_cronjob", "delete_cronjob", "pause_cronjob",
-            "cursor_up", "cursor_down", "cursor_left", "cursor_right",
-        ]
-        for action in guarded_actions:
-            assert table.check_action(action, ()) is False
+    guarded_actions = [
+        "cron_search", "clear_search", "next_match", "prev_match",
+        "edit_cronjob", "delete_cronjob", "pause_cronjob",
+        "cursor_up", "cursor_down", "cursor_left", "cursor_right",
+    ]
+    free_actions = ["create_cronjob_keybind", "refresh", "view_logs"]
 
-        # Actions not in the guarded set always return True
-        assert table.check_action("create_cronjob_keybind", ()) is True
-        assert table.check_action("refresh", ()) is True
-        assert table.check_action("view_logs", ()) is True
+    def test_disabled_when_empty(self, empty_table: CronTable):
+        for action in self.guarded_actions:
+            assert empty_table.check_action(action, ()) is False
 
-    def test_enabled_when_has_rows(self, mocker: MockerFixture):
-        """All actions are enabled when the table has rows."""
-        table = CronTable()
-        mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=3))
-
-        all_actions = [
-            "cron_search", "clear_search", "next_match", "prev_match",
-            "edit_cronjob", "delete_cronjob", "pause_cronjob",
-            "cursor_up", "cursor_down", "cursor_left", "cursor_right",
-            "create_cronjob_keybind", "refresh", "view_logs",
-        ]
+    def test_enabled_when_has_rows(self, table_with_rows: CronTable):
+        all_actions = self.guarded_actions + self.free_actions
         for action in all_actions:
-            assert table.check_action(action, ()) is True
+            assert table_with_rows.check_action(action, ()) is True
 
-    def test_unknown_action_allowed(self, mocker: MockerFixture):
-        """Unknown actions are allowed regardless of row count."""
-        table = CronTable()
-        mocker.patch.object(CronTable, "row_count", new_callable=PropertyMock(return_value=0))
-        assert table.check_action("some_unknown_action", ()) is True
+    def test_unknown_action_allowed(self, empty_table: CronTable):
+        assert empty_table.check_action("some_unknown_action", ()) is True
 
 
 class TestHighlightText:
-    def test_highlights_middle_of_text(self):
-        table = CronTable()
+    def test_highlights_middle_of_text(self, table: CronTable):
         result = table._highlight_text("hello world", "world")
-        rendered = str(result)
-        assert "world" in rendered
+        assert "world" in str(result)
 
-    def test_highlight_case_insensitive(self):
-        table = CronTable()
+    def test_highlight_case_insensitive(self, table: CronTable):
         result = table._highlight_text("Hello World", "world")
-        rendered = str(result)
-        # "world" in "World" should be found case-insensitively
+        assert str(result)
 
-    def test_no_match_returns_original(self):
-        table = CronTable()
+    def test_no_match_returns_original(self, table: CronTable):
         result = table._highlight_text("hello world", "xyz")
         assert str(result) == "hello world"
 
-    def test_empty_query(self):
-        table = CronTable()
+    def test_empty_query(self, table: CronTable):
         result = table._highlight_text("hello", "")
         assert str(result) == "hello"
 
-    def test_empty_text(self):
-        table = CronTable()
+    def test_empty_text(self, table: CronTable):
         result = table._highlight_text("", "hello")
         assert str(result) == ""
 
-    def test_multiple_matches(self):
-        table = CronTable()
+    def test_multiple_matches(self, table: CronTable):
         result = table._highlight_text("foo bar foo baz", "foo")
-        rendered = str(result)
-        assert "foo" in rendered
+        assert "foo" in str(result)
 
 
 class TestApplySearch:
@@ -141,6 +144,14 @@ class TestSearchNavigation:
         mocker.patch.object(table, "move_cursor")
         return table
 
+    @pytest.fixture
+    def table_no_matches(self, mocker: MockerFixture):
+        table = CronTable()
+        table._search_matches = []
+        table._search_index = -1
+        mocker.patch.object(table, "move_cursor")
+        return table
+
     def test_search_next_cycles_forward(self, table_with_matches):
         table_with_matches.action_search_next()
         assert table_with_matches._search_index == 1
@@ -167,25 +178,15 @@ class TestSearchNavigation:
         assert table_with_matches._search_index == 0
         table_with_matches.move_cursor.assert_called_with(row=2)
 
-    def test_search_next_no_matches(self, mocker: MockerFixture):
-        table = CronTable()
-        table._search_matches = []
-        table._search_index = -1
-        mocker.patch.object(table, "move_cursor")
+    def test_search_next_no_matches(self, table_no_matches):
+        table_no_matches.action_search_next()
+        assert table_no_matches._search_index == -1
+        table_no_matches.move_cursor.assert_not_called()
 
-        table.action_search_next()
-        assert table._search_index == -1
-        table.move_cursor.assert_not_called()
-
-    def test_search_prev_no_matches(self, mocker: MockerFixture):
-        table = CronTable()
-        table._search_matches = []
-        table._search_index = -1
-        mocker.patch.object(table, "move_cursor")
-
-        table.action_search_prev()
-        assert table._search_index == -1
-        table.move_cursor.assert_not_called()
+    def test_search_prev_no_matches(self, table_no_matches):
+        table_no_matches.action_search_prev()
+        assert table_no_matches._search_index == -1
+        table_no_matches.move_cursor.assert_not_called()
 
 
 class TestClearSearch:
@@ -210,7 +211,9 @@ class TestClearSearch:
 
 
 class TestFindIfCronjobExists:
-    def test_finds_job_by_comment_and_command(self, mocker: MockerFixture):
+    @pytest.fixture
+    def table_and_job(self, mocker: MockerFixture) -> tuple[CronTable, ...]:
+        """Sets up a CronTable with one cron job (test-job/echo hello)."""
         table = CronTable()
         job = mocker.MagicMock()
         job.comment = "test-job"
@@ -220,9 +223,13 @@ class TestFindIfCronjobExists:
         table.cron = cron
         table.remote = False
         table.ssh_client = None
+        return table, job
 
+    def test_finds_job_by_comment_and_command(self, table_and_job):
+        table, _ = table_and_job
         result = table.find_if_cronjob_exists("test-job", "echo hello")
-        assert result == job
+        assert result is not None
+        assert result.comment == "test-job"
 
     def test_finds_job_with_wrapper_command(self, mocker: MockerFixture):
         table = CronTable()
@@ -248,6 +255,7 @@ class TestFindIfCronjobExists:
         assert result == job
 
     def test_returns_none_when_no_match(self, mocker: MockerFixture):
+        """Search terms don't match the job's comment or command."""
         table = CronTable()
         job = mocker.MagicMock()
         job.comment = "other-job"
@@ -257,7 +265,6 @@ class TestFindIfCronjobExists:
         table.cron = cron
         table.remote = False
         table.ssh_client = None
-
         result = table.find_if_cronjob_exists("test-job", "echo hello")
         assert result is None
 
@@ -274,14 +281,12 @@ class TestFindIfCronjobExists:
 
 
 class TestParseCron:
-    def test_parses_active_job(self, mocker: MockerFixture):
-        table = CronTable()
-        cron = mocker.MagicMock()
+    """Cron parsing tests — build the table once per test since setup is extensive."""
+
+    @pytest.fixture
+    def chronicle(self, mocker: MockerFixture) -> dict:
+        """Returns mock objects for a single-job cron parse setup."""
         job = mocker.MagicMock()
-        job.slices.render.return_value = "* * * * *"
-        job.command = "/usr/bin/test.sh"
-        job.comment = "test-job"
-        job.is_enabled.return_value = True
         schedule = mocker.MagicMock()
         schedule.get_next.return_value = mocker.MagicMock(
             strftime=lambda fmt: "22.07.2026 at 12:00"
@@ -290,6 +295,40 @@ class TestParseCron:
             strftime=lambda fmt: "22.07.2026 at 11:00"
         )
         job.schedule.return_value = schedule
+        cron = mocker.MagicMock()
+        cron.__iter__.return_value = iter([job])
+
+        table = CronTable()
+        mocker.patch("cronboard.widgets.CronTable.has_wrapper", return_value=False)
+        mocker.patch("cronboard.widgets.CronTable.command_without_wrapper", side_effect=lambda x: x)
+        mocker.patch.object(table, "add_row")
+        mocker.patch.object(table, "_restore_cells")
+        mocker.patch.object(table, "_highlight_matches")
+        mocker.patch.object(table, "move_cursor")
+        mocker.patch.object(table, "update_cell_at")
+
+        return {"table": table, "cron": cron, "job": job}
+
+    def _make_schedule(self, mocker, next_str, prev_str):
+        """Helper to create a schedule mock with fixed strftime outputs."""
+        schedule = mocker.MagicMock()
+        schedule.get_next.return_value = mocker.MagicMock(
+            strftime=lambda fmt: next_str
+        )
+        schedule.get_prev.return_value = mocker.MagicMock(
+            strftime=lambda fmt: prev_str
+        )
+        return schedule
+
+    def test_parses_active_job(self, mocker: MockerFixture):
+        table = CronTable()
+        job = mocker.MagicMock()
+        job.slices.render.return_value = "* * * * *"
+        job.command = "/usr/bin/test.sh"
+        job.comment = "test-job"
+        job.is_enabled.return_value = True
+        job.schedule.return_value = self._make_schedule(mocker, "22.07.2026 at 12:00", "22.07.2026 at 11:00")
+        cron = mocker.MagicMock()
         cron.__iter__.return_value = iter([job])
         mocker.patch("cronboard.widgets.CronTable.has_wrapper", return_value=False)
         mocker.patch("cronboard.widgets.CronTable.command_without_wrapper", side_effect=lambda x: x)
@@ -311,20 +350,13 @@ class TestParseCron:
 
     def test_parses_paused_job(self, mocker: MockerFixture):
         table = CronTable()
-        cron = mocker.MagicMock()
         job = mocker.MagicMock()
         job.slices.render.return_value = "0 0 * * *"
         job.command = "/usr/bin/backup.sh"
         job.comment = "backup-job"
         job.is_enabled.return_value = False
-        schedule = mocker.MagicMock()
-        schedule.get_next.return_value = mocker.MagicMock(
-            strftime=lambda fmt: "23.07.2026 at 00:00"
-        )
-        schedule.get_prev.return_value = mocker.MagicMock(
-            strftime=lambda fmt: "22.07.2026 at 00:00"
-        )
-        job.schedule.return_value = schedule
+        job.schedule.return_value = self._make_schedule(mocker, "23.07.2026 at 00:00", "22.07.2026 at 00:00")
+        cron = mocker.MagicMock()
         cron.__iter__.return_value = iter([job])
         mocker.patch("cronboard.widgets.CronTable.has_wrapper", return_value=True)
         mocker.patch("cronboard.widgets.CronTable.command_without_wrapper", side_effect=lambda x: x)
@@ -344,13 +376,13 @@ class TestParseCron:
 
     def test_handles_schedule_error(self, mocker: MockerFixture):
         table = CronTable()
-        cron = mocker.MagicMock()
         job = mocker.MagicMock()
         job.slices.render.return_value = "bad-cron"
         job.command = "/usr/bin/test.sh"
         job.comment = "broken-job"
         job.is_enabled.return_value = True
         job.schedule.side_effect = ValueError("Invalid cron expression")
+        cron = mocker.MagicMock()
         cron.__iter__.return_value = iter([job])
         mocker.patch("cronboard.widgets.CronTable.has_wrapper", return_value=False)
         mocker.patch("cronboard.widgets.CronTable.command_without_wrapper", side_effect=lambda x: x)
