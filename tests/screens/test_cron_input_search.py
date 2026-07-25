@@ -1,6 +1,7 @@
 import pytest
-from cronboard.screens.CronInputSearch import CronInputSearch
 from textual.pilot import Pilot
+
+from cronboard.screens.cron_input_search import CronInputSearch
 
 
 async def search_input(pilot: Pilot):

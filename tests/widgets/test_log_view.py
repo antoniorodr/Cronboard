@@ -2,8 +2,7 @@ import pytest
 from pytest_mock import MockerFixture
 from textual.app import App, ComposeResult
 
-from cronboard.widgets.LogView import LogView, VirtualLogFileList, VirtualLogLines
-
+from cronboard.widgets.cron_log_view import LogView, VirtualLogFileList, VirtualLogLines
 
 _LOG_VIEW = "cronboard.widgets.LogView"
 

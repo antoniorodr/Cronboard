@@ -1,4 +1,4 @@
-from cronboard.screens.CronServers import CronServers
+from cronboard.screens.cron_servers import CronServers
 
 
 def test_disconnect_notifies_only_current_server(mocker):

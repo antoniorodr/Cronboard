@@ -8,7 +8,6 @@ from cronboard.services.cron_logging.logger import (
     get_log_files,
     read_log_file,
 )
-
 from tests.conftest import ssh_mock_exec_return, ssh_mock_exec_sequence
 
 _LOGGER = "cronboard.services.cron_logging.logger"

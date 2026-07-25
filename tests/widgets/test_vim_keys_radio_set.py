@@ -1,11 +1,12 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 from textual.app import App, ComposeResult
 from textual.widgets import RadioButton
 
 from cronboard.app import CronBoard
-from cronboard.widgets.VimKeysRadioSet import VimKeysRadioSet
-from cronboard.screens.CronCreator import CronCreator
+from cronboard.screens.cron_creator import CronCreator
+from cronboard.widgets.cron_vim_keys_radio_set import VimKeysRadioSet
 
 
 class _RadioDemoApp(App[None]):

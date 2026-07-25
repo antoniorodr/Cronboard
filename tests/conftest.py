@@ -1,15 +1,15 @@
+from collections.abc import AsyncIterator
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
-from pytest_mock import MockerFixture
 import pytest_asyncio
-from cronboard.app import CronBoard
-from cronboard.screens.CronCreator import CronCreator
-from cronboard.screens.CronCreator import CronAutoComplete
-from types import SimpleNamespace
-from cronboard.screens.CronSSHModal import CronSSHModal
-from collections.abc import AsyncIterator
+from pytest_mock import MockerFixture
 from textual.pilot import Pilot
+
+from cronboard.app import CronBoard
+from cronboard.screens.cron_creator import CronAutoComplete, CronCreator
+from cronboard.screens.cron_ssh_modal import CronSSHModal
 from cronboard.services.cron_logging import cron_wrapper as mod
 
 
