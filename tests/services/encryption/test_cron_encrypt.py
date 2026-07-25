@@ -1,6 +1,9 @@
 import pytest
 
-from cronboard.services.encryption.CronEncrypt import decrypt_password, encrypt_password
+from cronboard.services.encryption.cron_encrypt import (
+    decrypt_password,
+    encrypt_password,
+)
 
 
 @pytest.mark.parametrize("password", [""])

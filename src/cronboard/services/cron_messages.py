@@ -1,8 +1,8 @@
 from __future__ import annotations
-from paramiko.client import SSHClient
 
 from typing import Any
 
+from paramiko.client import SSHClient
 from textual.message import Message
 
 

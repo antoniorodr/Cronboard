@@ -1,15 +1,17 @@
-from pathlib import Path
-from paramiko.sftp_client import SFTPClient
 import base64
 import binascii
 import os
-import stat
-import paramiko
 import shlex
 import shutil
+import stat
+from pathlib import Path
 from typing import Optional
-from cronboard.config import WRAPPER_SOURCE, CONFIG_DIR, CONFIG_REL_PATH, WRAPPER_DIST
-from cronboard.services.CronDirEntry import CronDirEntry
+
+import paramiko
+from paramiko.sftp_client import SFTPClient
+
+from cronboard.config import CONFIG_DIR, CONFIG_REL_PATH, WRAPPER_DIST, WRAPPER_SOURCE
+from cronboard.services.cron_dir_entry import CronDirEntry
 
 """
 Prefix for base64-encoded user command in wrapped crontab lines (avoids shell

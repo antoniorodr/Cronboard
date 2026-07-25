@@ -4,7 +4,7 @@ from textual.app import App, ComposeResult
 
 from cronboard.widgets.cron_log_view import LogView, VirtualLogFileList, VirtualLogLines
 
-_LOG_VIEW = "cronboard.widgets.LogView"
+_LOG_VIEW = "cronboard.widgets.cron_log_view"
 
 
 class LogViewHarnessApp(App):

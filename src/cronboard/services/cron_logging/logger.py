@@ -1,10 +1,12 @@
-import paramiko
-import shlex
-from pathlib import Path
 import posixpath
-from cronboard.services.cron_logging.cron_wrapper import get_remote_home
-from cronboard.config import LOG_DIR, LOG_REL_PATH
+import shlex
 import shutil
+from pathlib import Path
+
+import paramiko
+
+from cronboard.config import LOG_DIR, LOG_REL_PATH
+from cronboard.services.cron_logging.cron_wrapper import get_remote_home
 
 
 def get_log_files(identificator: str, ssh: paramiko.SSHClient | None = None) -> dict:
