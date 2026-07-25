@@ -1,8 +1,8 @@
 from __future__ import annotations
-from textual.widget import Widget
 
 from textual.binding import Binding
 from textual.events import Mount
+from textual.widget import Widget
 from textual.widgets import RadioButton, RadioSet
 
 

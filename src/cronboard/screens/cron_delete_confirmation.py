@@ -1,12 +1,12 @@
+from crontab import CronTab
 from paramiko.client import SSHClient
 from textual.app import ComposeResult
-from crontab import CronTab
 from textual.binding import Binding
-
-from cronboard.services.messages import CronJobDeleted
-from textual.widgets import Button, Label
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import ModalScreen
+from textual.widgets import Button, Label
+
+from cronboard.services.cron_messages import CronJobDeleted
 
 
 class CronDeleteConfirmation(ModalScreen[bool]):

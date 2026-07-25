@@ -1,7 +1,11 @@
-from textual.content import Content
-from paramiko.sftp_client import SFTPClient
-from paramiko.client import SSHClient
+import os
 from os import DirEntry
+from pathlib import Path
+
+from paramiko.client import SSHClient
+from paramiko.sftp_client import SFTPClient
+from textual.content import Content
+from textual.widgets import Input
 from textual_autocomplete import (
     DropdownItem,
     PathAutoComplete,
@@ -10,11 +14,9 @@ from textual_autocomplete import (
 from textual_autocomplete._path_autocomplete import (
     PathDropdownItem,
 )
-import os
-from pathlib import Path
-from textual.widgets import Input
-from cronboard.services.cron_logging.cron_wrapper import get_remote_home, get_files
-from cronboard.services.CronDirEntry import CronDirEntry
+
+from cronboard.services.cron_dir_entry import CronDirEntry
+from cronboard.services.cron_logging.cron_wrapper import get_files, get_remote_home
 
 
 class CronAutoComplete(PathAutoComplete):

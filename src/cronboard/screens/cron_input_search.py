@@ -1,7 +1,7 @@
-from textual.widgets import Input
-from textual.binding import Binding
 from textual.app import ComposeResult
+from textual.binding import Binding
 from textual.screen import ModalScreen
+from textual.widgets import Input
 
 
 class CronInputSearch(ModalScreen):

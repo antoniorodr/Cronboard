@@ -1,18 +1,17 @@
 from __future__ import annotations
-from paramiko.client import SSHClient
 
 import re
 from typing import ClassVar
 
+from paramiko.client import SSHClient
 from rich.cells import cell_len
 from rich.style import Style
 from rich.text import Text
-
 from textual import events, on
 from textual.app import ComposeResult
 from textual.binding import Binding, BindingType
 from textual.containers import Grid, Horizontal, Vertical
-from textual.geometry import Size, Offset
+from textual.geometry import Offset, Size
 from textual.message import Message
 from textual.screen import ModalScreen
 from textual.scroll_view import ScrollView

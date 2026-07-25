@@ -1,37 +1,39 @@
-from textual.widget import Widget
-from textual.content import Content
 import tomllib
-from importlib.metadata import version, PackageNotFoundError
-from crontab import CronTab
-import tomlkit
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
+
+import tomlkit
+from crontab import CronTab
 from textual import events, on
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.containers import Container
+from textual.content import Content
+from textual.widget import Widget
 from textual.widgets import (
-    Footer,
-    Label,
-    Tabs,
-    Tab,
     Button,
-    Input,
     Checkbox,
+    Footer,
+    Input,
+    Label,
     MaskedInput,
     RadioButton,
     RadioSet,
     Select,
     Switch,
+    Tab,
+    Tabs,
     TextArea,
 )
-from cronboard.widgets.CronTable import CronTable
-from textual.containers import Container
-from cronboard.widgets.CronTabs import CronTabs
-from cronboard.screens.CronCreator import CronCreator
-from cronboard.services.messages import CronJobDeleted
+
+from cronboard.screens.cron_creator import CronCreator
+from cronboard.screens.cron_delete_confirmation import CronDeleteConfirmation
+from cronboard.screens.cron_servers import CronServers
 from cronboard.services.cron_logging.logger import delete_logs_for_identificator
-from cronboard.screens.CronDeleteConfirmation import CronDeleteConfirmation
-from cronboard.screens.CronServers import CronServers
+from cronboard.services.cron_messages import CronJobDeleted
 from cronboard.themes.everforest_dark_hard import everforest_dark_hard
+from cronboard.widgets.cron_table import CronTable
+from cronboard.widgets.cron_tabs import CronTabs
 
 
 def is_form_element(element: Widget | None):

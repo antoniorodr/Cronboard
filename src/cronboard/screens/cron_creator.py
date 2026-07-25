@@ -1,19 +1,20 @@
-from textual.widget import Widget
+from cron_descriptor import ExpressionDescriptor, Options
+from crontab import CronTab
 from paramiko.client import SSHClient
 from textual.app import ComposeResult
-from crontab import CronTab
-from textual.widgets import Button, Label, Input, RadioButton, RadioSet
 from textual.binding import Binding
 from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import ModalScreen
-from cron_descriptor import Options, ExpressionDescriptor
+from textual.widget import Widget
+from textual.widgets import Button, Input, Label, RadioButton, RadioSet
+
+from cronboard.services.cron_autocomplete import CronAutoComplete
 from cronboard.services.cron_logging.cron_wrapper import (
+    command_without_wrapper,
     has_wrapper,
     wrap_command,
-    command_without_wrapper,
 )
-from cronboard.widgets.VimKeysRadioSet import VimKeysRadioSet
-from cronboard.services.CronAutoComplete import CronAutoComplete
+from cronboard.widgets.cron_vim_keys_radio_set import VimKeysRadioSet
 
 CRON_ALIASES: dict[str, None | str] = {
     "@reboot": None,

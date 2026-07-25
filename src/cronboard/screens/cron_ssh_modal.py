@@ -1,9 +1,9 @@
-from textual.css.query import DOMQuery
-from textual.widget import Widget
 from textual.app import ComposeResult
-from textual.widgets import Button, Label, Input
 from textual.containers import Grid, Horizontal, Vertical
+from textual.css.query import DOMQuery
 from textual.screen import ModalScreen
+from textual.widget import Widget
+from textual.widgets import Button, Input, Label
 
 
 class CronSSHModal(ModalScreen):

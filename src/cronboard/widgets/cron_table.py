@@ -1,18 +1,20 @@
-from cronboard.screens.CronSSHModal import CronSSHModal
-from paramiko.client import SSHClient
+from datetime import datetime
+
 from crontab import CronTab
-from textual.widgets import DataTable
+from paramiko.client import SSHClient
+from rich.text import Text
 from textual.binding import Binding
 from textual.coordinate import Coordinate
-from datetime import datetime
-from rich.text import Text
-from cronboard.screens.CronInputSearch import CronInputSearch
+from textual.widgets import DataTable
+
+from cronboard.screens.cron_input_search import CronInputSearch
+from cronboard.screens.cron_ssh_modal import CronSSHModal
 from cronboard.services.cron_logging.cron_wrapper import (
+    command_without_wrapper,
     has_wrapper,
     wrap_command,
-    command_without_wrapper,
 )
-from cronboard.widgets.LogView import LogViewModal
+from cronboard.widgets.cron_log_view import LogViewModal
 
 
 class CronTable(DataTable):
