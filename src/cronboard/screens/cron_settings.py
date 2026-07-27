@@ -73,6 +73,7 @@ class CronSettings(Widget):
         if event.button.id == "save":
             try:
                 config = tomlkit.loads(open(CRONBOARD_CONFIG_FILE, "r").read())
+                config["notifications"] = self.notifications
                 config["telegram_token"] = encrypt_telegram_token(telegram_token)
                 config["telegram_chat_id"] = telegram_chat_id
 
@@ -97,3 +98,15 @@ class CronSettings(Widget):
                 self.query_one("#telegram-chat-id", Input).value = telegram_chat_id
         except Exception as e:
             print(f"Warning: Failed to fetch settings: {e}")
+
+    def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
+        """Enable/disable logs using radio buttons
+
+        Args:
+            event: RadioSet.Changed object. Identifies the button throught id.
+        """
+
+        if event.pressed.id == "enable":
+            self.notifications = True
+        elif event.pressed.id == "disable":
+            self.notifications = False
