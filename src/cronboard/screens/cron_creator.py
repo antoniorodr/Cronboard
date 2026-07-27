@@ -78,10 +78,13 @@ class CronCreator(ModalScreen[bool]):
         with Grid(id="dialog"):
             with Vertical(id="content"):
                 yield Label("Special characters:", id="label_special")
-                yield Label("* = any value", id="label_asterisk")
-                yield Label(", = value list separator", id="label_comma")
-                yield Label("- = range of values", id="label_dash")
-                yield Label("/ = step values", id="label_slash")
+                yield Grid(
+                    Label("* = any value", id="label_asterisk"),
+                    Label(", = value list separator", id="label_comma"),
+                    Label("- = range of values", id="label_dash"),
+                    Label("/ = step values", id="label_slash"),
+                    id="cron-help-grid",
+                )
                 yield Label(
                     "Enter a valid cron expression (remember whitespaces):",
                     classes="form-label",
