@@ -76,7 +76,7 @@ The default starting point for autocompletion is the home directory of the user 
 
 Cronboard can send notifications via Telegram when a cron job fails. To enable this feature, enter your Telegram token and chat ID in the settings panel.
 
-Do you need help getting your Telegram token and Telegram chat ID? Check out [this guide](https://cronboard.dev/notifications) on the official Cronboard documentation.
+Do you need help getting your Telegram token and Telegram chat ID? Check out [this guide](https://cronboard.dev/configuration/#telegram-notifications) on the official Cronboard documentation.
 
 ## ❤️ Do you like my work?
 
