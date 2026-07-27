@@ -47,24 +47,23 @@ connected = false
 crontab_user = "username"
 ```
 
->[!important]
 >Passwords are **never stored in plain text**, they are encrypted with `bcrypt` before being written to disk.
 
-### Telegram Notifications
+## Telegram Notifications
 
 Telegram notifications are disabled by default. To enable them, add your Telegram token and chat ID from the settings panel of the Cronboard application, and set `notifications` to `enabled`.
 
-#### How can I get Telegram bot token and chat ID?
+### How can I get Telegram bot token and chat ID?
 
 To create a Telegram bot and obtain the bot token and chat ID, you'll need to follow these steps:
 
-##### Create a Telegram Bot:
+#### Create a Telegram Bot:
 
 1. Open the Telegram app and search for the "BotFather" (username: @BotFather).
 2. Start a chat with BotFather and use the command "/newbot" to create a new bot.
 3. Follow the instructions provided by BotFather to choose a name and username for your bot. d. Once the bot is created, BotFather will provide you with a unique API token. This token is your bot token, and you will need it to authenticate and interact with the Telegram Bot API.
 
-##### Obtain your Chat ID:
+#### Obtain your Chat ID:
 1. Add your newly created bot to the desired Telegram chat or group where you want to receive messages.
 2. Open a web browser and enter the following URL, replacing <YourBotToken> with the token you received from BotFather:
 https://api.telegram.org/bot<YourBotToken>/getUpdates
@@ -72,6 +71,6 @@ https://api.telegram.org/bot<YourBotToken>/getUpdates
 4. Look for the "chat" object in the response, which contains details about the chat your bot is part of.
 5. The "id" field within the "chat" object corresponds to the chat ID of the group or channel. Make note of this chat ID; you will need it to send messages to the chat.
 
->[!important]
+
 >The Telegram bot token and chat ID are **never stored in plain text**, they are encrypted with `OpenSSL` before being written to disk.
 >The notifications feature is a global setting
