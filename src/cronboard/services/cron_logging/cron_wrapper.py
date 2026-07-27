@@ -287,7 +287,9 @@ def _decode_wrapped_command_payload(token: str) -> str | None:
 
 
 def wrap_command(
-    command: str, identificator: str, ssh: paramiko.SSHClient | None = None
+    command: str,
+    identificator: str,
+    ssh: paramiko.SSHClient | None = None,
 ) -> str:
     """Wraps the cronjob's command with the log wrapper.
 
@@ -382,10 +384,9 @@ def command_without_wrapper(command: str) -> str:
 
     if not wrapper_path.endswith("cron-wrapper.sh"):
         return command
-
-    # strip: bash + wrapper + identificator
     if len(parts) < 4:
         return command
+
     decoded: str | None = _decode_wrapped_command_payload(parts[3])
     if decoded is not None:
         return decoded
