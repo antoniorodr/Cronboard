@@ -21,6 +21,7 @@ class CronSettings(Widget):
 
     def __init__(self) -> None:
         super().__init__()
+        self.notifications: bool = False
 
     def compose(self) -> ComposeResult:
         """Builds the settings panel: Telegram notification settings."""
@@ -35,6 +36,15 @@ class CronSettings(Widget):
             ),
             Label("Enter your Telegram chat ID", classes="form-label mt-2"),
             Input(placeholder="Chat ID", id="telegram-chat-id"),
+            Label(
+                "Global notifications",
+                classes="form-label mt-2",
+            ),
+            VimKeysRadioSet(
+                RadioButton("Enable", id="enable", value=self.notifications),
+                RadioButton("Disable", id="disable", value=not self.notifications),
+                id="notifications",
+            ),
             Horizontal(
                 Button("Save", variant="primary", id="save"),
                 id="button-row",
