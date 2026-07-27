@@ -4,8 +4,13 @@ set -o pipefail
 
 JOB_NAME="${1:-unknown_job}"
 
+CONFIG_FILE="${CRONBOARD_CONFIG_FILE:-$HOME/.config/cronboard/config.toml}"
 LOG_DIR="${CRONBOARD_LOG_DIR:-$HOME/.config/cronboard/logs/${JOB_NAME}}"
 mkdir -p "$LOG_DIR"
+
+TELEGRAM_TOKEN_ENCRYPTED=$(grep 'telegram_token' "$CONFIG_FILE" | sed 's/^telegram_token *= *//; s/^"//; s/"$//')
+TELEGRAM_CHAT_ID=$(grep 'telegram_chat_id' "$CONFIG_FILE" | sed 's/^telegram_chat_id *= *//; s/^"//; s/"$//')
+TELEGRAM_TOKEN=$(printf '%s' "$TELEGRAM_TOKEN_ENCRYPTED" | openssl enc -d -aes-256-cbc -salt -pbkdf2 -pass file:"$HOME/.config/cronboard/secret.key" -base64 -A 2>/dev/null)
 
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 shift
@@ -90,7 +95,25 @@ fi
   echo "========================================"
 } >> "$LOG_FILE"
 
+# Capture error message
+ERROR_MSG=""
+if [ $EXIT_CODE -ne 0 ] && [ -s "$ERR_FILE" ]; then
+  ERROR_MSG=$(head -1 "$ERR_FILE" | sed 's/^.*: line [0-9]\+: //')
+fi
+
 # Cleanup temp files
 rm -f "$LOG_FILE.out" "$ERR_FILE"
+
+# Send notification
+if [ $EXIT_CODE -ne 0 ]; then
+  if [ -z "$TELEGRAM_TOKEN" ]; then
+    echo "ERROR: Telegram token is empty - decryption likely failed" >> "$LOG_FILE"
+  else
+    curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+      --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+      --data-urlencode "text=${JOB_NAME} failed (exit ${EXIT_CODE}): ${ERROR_MSG:-unknown error}" \
+      2>> "$LOG_DIR/curl_errors.log"
+  fi
+fi
 
 exit $EXIT_CODE
