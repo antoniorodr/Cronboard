@@ -438,18 +438,16 @@ class CronTable(DataTable):
             self.action_edit_cronjob_keybind(
                 identificator,
                 expr,
-                wrap_command(
-                    cmd,
-                    identificator,
-                    self.ssh_client if self.remote and self.ssh_client else None,
-                ),
+                job_to_edit.command,
             )
             return
 
         if not job_to_edit:
             job_to_edit = self.find_if_cronjob_exists(identificator, cmd)
         if job_to_edit:
-            self.action_edit_cronjob_keybind(identificator, expr, cmd)
+            self.action_edit_cronjob_keybind(
+                identificator, expr, job_to_edit.command
+            )
 
     def action_delete_cronjob(self) -> None:
         """Deletes the selected cronjob."""
