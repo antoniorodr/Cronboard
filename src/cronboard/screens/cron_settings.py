@@ -6,8 +6,8 @@ from textual.widgets import Button, Input, Label
 
 from cronboard.config import CRONBOARD_CONFIG_FILE
 from cronboard.services.encryption.cron_encrypt import (
-    decrypt_password,
-    encrypt_password,
+    decrypt_telegram_token,
+    encrypt_telegram_token,
 )
 
 
@@ -57,20 +57,17 @@ class CronSettings(Widget):
         """Saves the settings."""
 
         telegram_token: str = self.query_one("#telegram-token", Input).value
-        telegram_token_encrypted: str = encrypt_password(telegram_token)
         telegram_chat_id: str = self.query_one("#telegram-chat-id", Input).value
 
         if event.button.id == "save":
             try:
-                with open(CRONBOARD_CONFIG_FILE, "a") as f:
-                    f.write(
-                        tomlkit.dumps(
-                            {
-                                "telegram_token": telegram_token_encrypted,
-                                "telegram_chat_id": telegram_chat_id,
-                            }
-                        )
-                    )
+                config = tomlkit.loads(open(CRONBOARD_CONFIG_FILE, "r").read())
+                config["telegram_token"] = encrypt_telegram_token(telegram_token)
+                config["telegram_chat_id"] = telegram_chat_id
+
+                with open(CRONBOARD_CONFIG_FILE, "w") as f:
+                    f.write(tomlkit.dumps(config))
+
                 self.notify("Settings saved")
             except Exception as e:
                 self.notify(f"Failed to save settings: {e}")
@@ -83,7 +80,7 @@ class CronSettings(Widget):
                 config: dict = tomlkit.loads(f.read())
                 telegram_token: str = config.get("telegram_token", "")
                 telegram_chat_id: str = config.get("telegram_chat_id", "")
-                self.query_one("#telegram-token", Input).value = decrypt_password(
+                self.query_one("#telegram-token", Input).value = decrypt_telegram_token(
                     telegram_token
                 )
                 self.query_one("#telegram-chat-id", Input).value = telegram_chat_id
