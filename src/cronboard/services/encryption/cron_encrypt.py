@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 from cryptography.fernet import Fernet
 
@@ -56,3 +57,64 @@ def decrypt_password(token: str) -> str:
         return ""
 
     return fernet.decrypt(token.encode()).decode()
+
+
+def encrypt_telegram_token(token: str) -> str:
+    """Encrypts the Telegram token using OpenSSL.
+
+    Args:
+        token: The Telegram token to encrypt.
+
+    Returns:
+        The encrypted Telegram token as a string.
+    """
+
+    if not token:
+        return ""
+    return subprocess.run(
+        [
+            "openssl",
+            "enc",
+            "-aes-256-cbc",
+            "-salt",
+            "-pbkdf2",
+            "-pass",
+            "file:" + str(KEY_FILE),
+            "-base64",
+            "-A",
+        ],
+        input=token.encode(),
+        capture_output=True,
+        check=False,
+    ).stdout.decode()
+
+
+def decrypt_telegram_token(token: str) -> str:
+    """Decrypts the Telegram token using OpenSSL.
+
+    Args:
+        token: The encrypted Telegram token as a string.
+
+    Returns:
+        The decrypted Telegram token as a string.
+    """
+
+    if not token:
+        return ""
+    return subprocess.run(
+        [
+            "openssl",
+            "enc",
+            "-d",
+            "-aes-256-cbc",
+            "-salt",
+            "-pbkdf2",
+            "-pass",
+            "file:" + str(KEY_FILE),
+            "-base64",
+            "-A",
+        ],
+        input=token.encode(),
+        capture_output=True,
+        check=False,
+    ).stdout.decode()
