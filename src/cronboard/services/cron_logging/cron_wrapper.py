@@ -8,9 +8,17 @@ from pathlib import Path
 from typing import Optional
 
 import paramiko
+import tomlkit
 from paramiko.sftp_client import SFTPClient
 
-from cronboard.config import CONFIG_DIR, CONFIG_REL_PATH, WRAPPER_DIST, WRAPPER_SOURCE
+from cronboard.config import (
+    CONFIG_DIR,
+    CONFIG_REL_PATH,
+    CRONBOARD_CONFIG_FILE,
+    KEY_FILE,
+    WRAPPER_DIST,
+    WRAPPER_SOURCE,
+)
 from cronboard.services.cron_dir_entry import CronDirEntry
 
 """
@@ -206,6 +214,8 @@ def install_wrapper_remote(ssh: paramiko.SSHClient) -> str | None:
 
     remote_dir = f"{home}/{CONFIG_REL_PATH}"
     remote_file = f"{remote_dir}/{WRAPPER_DIST}"
+    remote_key = f"{remote_dir}/secret.key"
+    remote_config = f"{remote_dir}/config.toml"
 
     sftp: SFTPClient = ssh.open_sftp()
 
@@ -213,6 +223,14 @@ def install_wrapper_remote(ssh: paramiko.SSHClient) -> str | None:
         ssh.exec_command(f"mkdir -p {remote_dir}")
         sftp.put(str(WRAPPER_SOURCE), remote_file)
         ssh.exec_command(f"chmod +x {remote_file}")
+
+        sftp.put(str(KEY_FILE), remote_key)
+        ssh.exec_command(f"chmod 600 {remote_key}")
+
+        config_content = _generate_telegram_config()
+        with sftp.open(remote_config, "w") as f:
+            f.write(config_content)
+
     except Exception as e:
         print(f"Error: {e}")
         return None
@@ -220,6 +238,21 @@ def install_wrapper_remote(ssh: paramiko.SSHClient) -> str | None:
         sftp.close()
 
     return remote_file
+
+
+def _generate_telegram_config() -> str:
+    """Generates a minimal config.toml with only Telegram settings."""
+
+    try:
+        with open(CRONBOARD_CONFIG_FILE, "r") as f:
+            config: dict = tomlkit.loads(f.read())
+        minimal: dict = tomlkit.document()
+        minimal["telegram_token"] = config.get("telegram_token", "")
+        minimal["telegram_chat_id"] = config.get("telegram_chat_id", "")
+        return tomlkit.dumps(minimal)
+    except Exception as e:
+        print(f"Error: {e}")
+        return ""
 
 
 def install_wrapper(ssh: paramiko.SSHClient | None = None) -> str | None:
