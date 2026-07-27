@@ -5,11 +5,90 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 27.07.2026
+
+### Added
+- Add documentation for notifications
+- Add notifications enable/disable toggle
+- Add grid to the expecial chars
+- Add telegram token encryption
+- Add styling to the `settings` tab
+- Add `CONFIG_FILE` constant
+- Add a `settings` tab
+- Add info about PR template by @antoniorodr
+- Docs(CronTable)): add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add docstrings by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add more typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+- Add typing by @antoniorodr
+
+### Changed
+- Update to version 1.0.0
+- Update readme with new feature (notifications)
+- Update styles
+- Feat(notifications): the radiobuttons value is now saved in the config
+- Change notifications label
+- Refactor(cron-wrapper): check if notifications are enabled before
+- Change styling of the modal
+- Use openssl for encryption/decryption
+- Uses the new Telegram token encryption
+- Change the name of a constant
+- Create settings screen for notifications
+- Update imports
+- Combine nested if statements
+- Create new settings widget
+- Rename `logger` to `cron_logger` by @antoniorodr
+- Change imports and mocks by @antoniorodr
+- Organize imports and change file names by @antoniorodr
+- Organize imports and change file names by @antoniorodr
+- Update `no-autopilot` workflow by @antoniorodr
+- Update PR template by @antoniorodr
+- Update the file with more information by @antoniorodr
+- Create docstrings by @antoniorodr
+- Create docstrings by @antoniorodr
+- Create docstrings by @antoniorodr
+- Update changelog by @antoniorodr
+
+### Fixed
+- Fixing tests
+- Fix bug with notifications
+- Fix a bug where it was overwriting the config file
+- Fix `returns` docstring format by @antoniorodr
+- Fix `returns` docstrings formating by @antoniorodr
+
+### Removed
+- Delete unused code
+- Delete unused code
+
 ## [0.7.3] - 19.07.2026
 
 ### Changed
-- Update version
-- Create cache for dropdown items
+- Update version by @antoniorodr
+- Create cache for dropdown items by @antoniorodr
 - Update by @antoniorodr
 
 ## [0.7.2] - 19.07.2026
@@ -559,6 +638,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @antoniorodr made their first contribution
 
+[1.0.0]: https://github.com/antoniorodr/cronboard/compare/v0.7.3...v1.0.0
 [0.7.3]: https://github.com/antoniorodr/cronboard/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/antoniorodr/cronboard/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/antoniorodr/cronboard/compare/v0.7.0...v0.7.1
