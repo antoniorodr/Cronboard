@@ -152,8 +152,10 @@ class CronBoard(App):
 
         try:
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
+            config = self.load_config()
+            config["theme"] = theme
             with self.config_path.open("w") as f:
-                f.write(tomlkit.dumps({"theme": theme}))
+                f.write(tomlkit.dumps(config))
         except Exception as e:
             print(f"Warning: Failed to save theme: {e}")
 
