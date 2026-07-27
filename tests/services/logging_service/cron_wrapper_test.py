@@ -147,9 +147,13 @@ def test_install_wrapper_remote_executes_expected_commands_and_returns_remote_pa
 
     sftp = mocker.Mock()
     ssh.open_sftp.return_value = sftp
+    mock_file_ctx = mocker.MagicMock()
+    sftp.open.return_value.__enter__ = mocker.Mock(return_value=mock_file_ctx)
+    sftp.open.return_value.__exit__ = mocker.Mock(return_value=False)
 
     local_wrapper_source = "/some/local/cron-wrapper.sh"
     mocker.patch.object(mod, "WRAPPER_SOURCE", Path(local_wrapper_source))
+    mocker.patch.object(mod, "_generate_telegram_config", return_value="")
 
     remote_path = mod.install_wrapper_remote(ssh)
 
@@ -163,7 +167,7 @@ def test_install_wrapper_remote_executes_expected_commands_and_returns_remote_pa
     ssh.exec_command.assert_any_call(f"mkdir -p {expected_remote_dir}")
     ssh.exec_command.assert_any_call(f"chmod +x {expected_remote_file}")
 
-    sftp.put.assert_called_once_with(
+    sftp.put.assert_any_call(
         str(mod.WRAPPER_SOURCE),
         expected_remote_file,
     )
