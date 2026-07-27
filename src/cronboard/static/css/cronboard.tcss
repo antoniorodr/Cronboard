@@ -143,7 +143,8 @@ CronTabs {
 #dialog {
   align: center middle;
   width: 60%;
-  height: 90%;
+  height: auto;
+  max-height: 95%;
   max-width: 80;
   min-height: 20;
   background: $surface;
@@ -160,9 +161,8 @@ LogViewModal #dialog {
 #content {
   align: center middle;
   width: 100%;
-  height: 1fr;
+  height: auto;
   padding: 1 2 0 2;
-  overflow-y: auto;
 }
 
 #content>Label {
@@ -173,13 +173,15 @@ LogViewModal #dialog {
 
 #content #cron-help-grid Label {
   width: auto;
-  text-align: left;
+  text-align: center;
+  margin-bottom: 0;
 }
 
 #cron-help-grid {
   grid-size: 2 2;
-  height: 3;
+  height: 2;
   margin-bottom: 1;
+  align: center middle;
 }
 
 #hostname,
@@ -206,7 +208,10 @@ LogViewModal #dialog {
   margin-bottom: 0;
 }
 
-#label_asterisk {
+#label_asterisk,
+#label_comma,
+#label_dash,
+#label_slash {
   color: $text-muted;
   text-style: italic;
   margin-bottom: 0;
@@ -270,18 +275,4 @@ VirtualLogLines {
   &:focus {
     background-tint: $foreground 5%;
   }
-}
-
-#cron-help-grid {
-  grid-size: 2 2;
-  height: auto;
-  margin-bottom: 1;
-}
-
-#label_asterisk,
-#label_comma,
-#label_dash,
-#label_slash {
-  margin-bottom: 0;
-  padding-left: 2;
 }
