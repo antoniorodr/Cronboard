@@ -11,6 +11,7 @@ mkdir -p "$LOG_DIR"
 TELEGRAM_TOKEN_ENCRYPTED=$(grep 'telegram_token' "$CONFIG_FILE" | sed 's/^telegram_token *= *//; s/^"//; s/"$//')
 TELEGRAM_CHAT_ID=$(grep 'telegram_chat_id' "$CONFIG_FILE" | sed 's/^telegram_chat_id *= *//; s/^"//; s/"$//')
 TELEGRAM_TOKEN=$(printf '%s' "$TELEGRAM_TOKEN_ENCRYPTED" | openssl enc -d -aes-256-cbc -salt -pbkdf2 -pass file:"$HOME/.config/cronboard/secret.key" -base64 -A 2>/dev/null)
+NOTIFICATIONS_ENABLED=$(grep 'notifications' "$CONFIG_FILE" | sed 's/^notifications *= *//; s/^"//; s/"$//')
 
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 shift
@@ -105,7 +106,7 @@ fi
 rm -f "$LOG_FILE.out" "$ERR_FILE"
 
 # Send notification
-if [ $EXIT_CODE -ne 0 ]; then
+if [ $EXIT_CODE -ne 0 ] && $NOTIFICATIONS_ENABLED; then
   if [ -z "$TELEGRAM_TOKEN" ]; then
     echo "ERROR: Telegram token is empty - decryption likely failed" >> "$LOG_FILE"
   else
