@@ -8,7 +8,7 @@ authors = [
   { name = "Antonio Rodriguez", email = "kontakt@antoniorodriguez.no" },
 ]
 description = "A terminal-based dashboard for managing cron jobs"
-version = "0.7.3"
+version = "1.0.0"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
