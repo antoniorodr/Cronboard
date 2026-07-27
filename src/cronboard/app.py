@@ -29,6 +29,7 @@ from textual.widgets import (
 from cronboard.screens.cron_creator import CronCreator
 from cronboard.screens.cron_delete_confirmation import CronDeleteConfirmation
 from cronboard.screens.cron_servers import CronServers
+from cronboard.screens.cron_settings import CronSettings
 from cronboard.services.cron_logging.cron_logger import delete_logs_for_identificator
 from cronboard.services.cron_messages import CronJobDeleted
 from cronboard.themes.everforest_dark_hard import everforest_dark_hard
@@ -102,6 +103,7 @@ class CronBoard(App):
         self.tabs = CronTabs(
             Tab("Local", id="local"),
             Tab("Servers", id="servers"),
+            Tab("Settings", id="settings"),
         )
         yield self.tabs
         self.content_container = Container(id="tab-content")
@@ -119,6 +121,7 @@ class CronBoard(App):
         saved_theme: str = config.get("theme", "catppuccin-mocha")
         self.theme: str = saved_theme
         self.servers = None
+        self.settings_tab = None
         self.local_table = CronTable(id="local-crontable")
         self.content_container.mount(self.local_table)
         self.local_table.display = True
@@ -166,6 +169,8 @@ class CronBoard(App):
             self.show_tab_content(0)
         elif tab_label == "Servers":
             self.show_tab_content(1)
+        elif tab_label == "Settings":
+            self.show_tab_content(2)
 
     def show_tab_content(self, index: int) -> None:
         """Shows the content for the tab at the given index.
@@ -178,12 +183,22 @@ class CronBoard(App):
             self.local_table.display = True
             if self.servers:
                 self.servers.display = False
+            if self.settings_tab:
+                self.settings_tab.display = False
         elif index == 1:
             if not self.servers:
                 self.servers = CronServers()
                 self.content_container.mount(self.servers)
             self.local_table.display = False
             self.servers.display = True
+        elif index == 2:
+            if self.servers:
+                self.servers.display = False
+            self.local_table.display = False
+            if not self.settings_tab:
+                self.settings_tab = CronSettings()
+                self.content_container.mount(self.settings_tab)
+            self.settings_tab.display = True
 
     def toggle_tab_enablement(self) -> None:
         self.tab_disabled: bool = not self.tab_disabled
