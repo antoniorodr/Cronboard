@@ -184,7 +184,7 @@ class CronCreator(ModalScreen[bool]):
 
         if event.pressed.id == "enable":
             self.log_enabled = True
-        else:
+        elif event.pressed.id == "disable":
             self.log_enabled = False
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

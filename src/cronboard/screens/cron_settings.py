@@ -2,13 +2,14 @@ import tomlkit
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
-from textual.widgets import Button, Input, Label
+from textual.widgets import Button, Input, Label, RadioButton, RadioSet
 
 from cronboard.config import CRONBOARD_CONFIG_FILE
 from cronboard.services.encryption.cron_encrypt import (
     decrypt_telegram_token,
     encrypt_telegram_token,
 )
+from cronboard.widgets.cron_vim_keys_radio_set import VimKeysRadioSet
 
 
 class CronSettings(Widget):
@@ -25,7 +26,7 @@ class CronSettings(Widget):
         """Builds the settings panel: Telegram notification settings."""
 
         yield Vertical(
-            Label("Telegram notification", classes="settings-title"),
+            Label("Telegram notifications", classes="settings-title"),
             Label("Enter your Telegram token", classes="form-label"),
             Input(
                 placeholder="AAEFAAAAQKI_mDsJppSEQRr3kLOz9SatBxq48BgQLSHLRv;n",
