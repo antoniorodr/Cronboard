@@ -3,9 +3,6 @@
 >[!important]
 >Cronboard was selected as the [Terminal Trove Tool of the Week](https://terminaltrove.com/cronboard/) in October 28th 2025! 
 
-> [!caution]
-> **Status:** Under development
-
 
 ## ℹ️ About
 
@@ -28,6 +25,7 @@ Full documentation is available at [cronboard.dev](https://cronboard.dev).
 - Connect to servers over SSH with either a password or SSH keys
 - Manage cron jobs for another user when you have the required `sudo` permissions
 - Search for cron jobs using case-insensitive keywords
+- Get notifications via Telegram when a cron job fails
 
 ## 🛠️ Technologies
 
@@ -73,6 +71,12 @@ Cronboard includes a footer, provided by [Textual](https://textual.textualize.io
 Path autocompletion when creating or editing cron jobs helps you enter file paths faster.
 
 The default starting point for autocompletion is the home directory of the user whose cron jobs you are managing. Accept a suggestion with the `Tab` key.
+
+### :bell: Notifications
+
+Cronboard can send notifications via Telegram when a cron job fails. To enable this feature, enter your Telegram token and chat ID in the settings panel.
+
+Do you need help getting your Telegram token and Telegram chat ID? Check out [this guide](https://cronboard.dev/notifications) on the official Cronboard documentation.
 
 ## ❤️ Do you like my work?
 
