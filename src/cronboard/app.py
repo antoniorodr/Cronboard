@@ -243,13 +243,14 @@ class CronBoard(App):
         self._focus_active_panel()
 
     def _focus_active_panel(self) -> None:
-        if self.tabs.active == "local":
-            if self.local_table:
-                self.set_focus(self.local_table)
+        if self.tabs.active == "local" and self.local_table:
+            self.set_focus(self.local_table)
 
-        elif self.tabs.active == "servers":
-            if self.servers:
-                self.servers.focus_tree()
+        elif self.tabs.active == "servers" and self.servers:
+            self.servers.focus_tree()
+
+        elif self.tabs.active == "settings" and self.settings_tab:
+            self.settings_tab.action_jump()
 
     def action_create_cronjob(
         self, cron: CronTab, remote=False, ssh_client=None, crontab_user=None
