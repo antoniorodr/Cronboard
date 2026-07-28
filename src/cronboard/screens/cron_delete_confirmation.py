@@ -123,6 +123,13 @@ class CronDeleteConfirmation(ModalScreen[bool]):
                         ssh_client=self.ssh_client if self.remote else None,
                     )
                 )
+
+            if ident:
+                self.delete_notification(ident)
+
+            if self.remote and self.ssh_client:
+                self.push_notifications_to_remote()
+
         self.dismiss(True)
 
     def write_remote_crontab(self) -> bool:
