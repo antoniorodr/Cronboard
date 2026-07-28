@@ -299,7 +299,7 @@ def install_wrapper(
     if ssh is None:
         return install_wrapper_local()
     else:
-        return install_wrapper_remote(ssh)
+        return install_wrapper_remote(ssh, server_name)
 
 
 def _encode_wrapped_command_payload(command: str) -> str:
@@ -321,6 +321,7 @@ def wrap_command(
     command: str,
     identificator: str,
     ssh: paramiko.SSHClient | None = None,
+    server_name: str = "local",
 ) -> str:
     """Wraps the cronjob's command with the log wrapper.
 
@@ -333,7 +334,7 @@ def wrap_command(
         The wrapped command if the wrapper is installed, else the original command.
     """
 
-    wrapper_path: str | None = install_wrapper(ssh)
+    wrapper_path: str | None = install_wrapper(ssh, server_name)
     if wrapper_path is None:
         # If this is None, it means failed to install wrapper in ssh server
         return command
