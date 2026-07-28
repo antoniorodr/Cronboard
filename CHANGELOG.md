@@ -5,16 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 28.07.2026
+
+### Added
+- Add import for tomlkit
+- Add event to notifications radiobutton
+- Add radiobuttons for notifications
+- Add new attributes
+- Add `notifications` column to cron table
+- Add `CRONBOARD_NOTIFICATIONS_FILE` constant
+
+### Changed
+- Bump version to v1.1.0
+- Update notifications config on site
+- Use `server_name` in all operations
+- Change `Grid` to `Vertical` in `CronCreator`
+- Create helper methods for notifications
+- After creation, save the settings
+- Use `server_name`
+- Create helper functions for notifications
+- If logging is disabled, do not show log modal
+- Use `server_name` in all operations
+- Create helper functions for notifications
+- If cronjob is deleted, delete notifications entry
+- Create `server_name` param
+- Some adjustments on the parameters
+- Create helper function for notifications
+- Copy the `notifications.toml` file to server
+- Only create logs if logging is enabled
+- Check if log and/or notifications are enabled
+- Update `cron_creator` and `cron_delete_confirmation` modals
+- Update link to documentation for notifications by @antoniorodr
+- Update explanation for Telegram notifications by @antoniorodr
+- Update changelog by @antoniorodr
+
+### Fixed
+- Update function calling with new signature
+
+### Removed
+- Delete notifications toggle
+
 ## [1.0.0] - 27.07.2026
 
 ### Added
-- Add documentation for notifications
-- Add notifications enable/disable toggle
-- Add grid to the expecial chars
-- Add telegram token encryption
-- Add styling to the `settings` tab
-- Add `CONFIG_FILE` constant
-- Add a `settings` tab
+- Add documentation for notifications by @antoniorodr
+- Add notifications enable/disable toggle by @antoniorodr
+- Add grid to the expecial chars by @antoniorodr
+- Add telegram token encryption by @antoniorodr
+- Add styling to the `settings` tab by @antoniorodr
+- Add `CONFIG_FILE` constant by @antoniorodr
+- Add a `settings` tab by @antoniorodr
 - Add info about PR template by @antoniorodr
 - Docs(CronTable)): add docstrings by @antoniorodr
 - Add docstrings by @antoniorodr
@@ -47,20 +87,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add typing by @antoniorodr
 
 ### Changed
-- Update to version 1.0.0
-- Update readme with new feature (notifications)
-- Update styles
-- Feat(notifications): the radiobuttons value is now saved in the config
-- Change notifications label
-- Refactor(cron-wrapper): check if notifications are enabled before
-- Change styling of the modal
-- Use openssl for encryption/decryption
-- Uses the new Telegram token encryption
-- Change the name of a constant
-- Create settings screen for notifications
-- Update imports
-- Combine nested if statements
-- Create new settings widget
+- Update to version 1.0.0 by @antoniorodr
+- Update readme with new feature (notifications) by @antoniorodr
+- Update styles by @antoniorodr
+- Feat(notifications): the radiobuttons value is now saved in the config by @antoniorodr
+- Change notifications label by @antoniorodr
+- Refactor(cron-wrapper): check if notifications are enabled before by @antoniorodr
+- Change styling of the modal by @antoniorodr
+- Use openssl for encryption/decryption by @antoniorodr
+- Uses the new Telegram token encryption by @antoniorodr
+- Change the name of a constant by @antoniorodr
+- Create settings screen for notifications by @antoniorodr
+- Update imports by @antoniorodr
+- Combine nested if statements by @antoniorodr
+- Create new settings widget by @antoniorodr
 - Rename `logger` to `cron_logger` by @antoniorodr
 - Change imports and mocks by @antoniorodr
 - Organize imports and change file names by @antoniorodr
@@ -74,15 +114,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog by @antoniorodr
 
 ### Fixed
-- Fixing tests
-- Fix bug with notifications
-- Fix a bug where it was overwriting the config file
+- Fixing tests by @antoniorodr
+- Fix bug with notifications by @antoniorodr
+- Fix a bug where it was overwriting the config file by @antoniorodr
 - Fix `returns` docstring format by @antoniorodr
 - Fix `returns` docstrings formating by @antoniorodr
 
 ### Removed
-- Delete unused code
-- Delete unused code
+- Delete unused code by @antoniorodr
+- Delete unused code by @antoniorodr
 
 ## [0.7.3] - 19.07.2026
 
@@ -638,6 +678,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @antoniorodr made their first contribution
 
+[1.1.0]: https://github.com/antoniorodr/cronboard/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/antoniorodr/cronboard/compare/v0.7.3...v1.0.0
 [0.7.3]: https://github.com/antoniorodr/cronboard/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/antoniorodr/cronboard/compare/v0.7.1...v0.7.2
