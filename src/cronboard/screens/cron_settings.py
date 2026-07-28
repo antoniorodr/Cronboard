@@ -2,14 +2,13 @@ import tomlkit
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widget import Widget
-from textual.widgets import Button, Input, Label, RadioButton, RadioSet
+from textual.widgets import Button, Input, Label
 
 from cronboard.config import CRONBOARD_CONFIG_FILE
 from cronboard.services.encryption.cron_encrypt import (
     decrypt_telegram_token,
     encrypt_telegram_token,
 )
-from cronboard.widgets.cron_vim_keys_radio_set import VimKeysRadioSet
 
 
 class CronSettings(Widget):
@@ -21,7 +20,6 @@ class CronSettings(Widget):
 
     def __init__(self) -> None:
         super().__init__()
-        self.notifications: bool = False
 
     def compose(self) -> ComposeResult:
         """Builds the settings panel: Telegram notification settings."""
@@ -36,15 +34,6 @@ class CronSettings(Widget):
             ),
             Label("Enter your Telegram chat ID", classes="form-label mt-2"),
             Input(placeholder="Chat ID", id="telegram-chat-id"),
-            Label(
-                "Global notifications",
-                classes="form-label mt-2",
-            ),
-            VimKeysRadioSet(
-                RadioButton("Enable", id="enable", value=self.notifications),
-                RadioButton("Disable", id="disable", value=not self.notifications),
-                id="notifications",
-            ),
             Horizontal(
                 Button("Save", variant="primary", id="save"),
                 id="button-row",
@@ -73,7 +62,6 @@ class CronSettings(Widget):
         if event.button.id == "save":
             try:
                 config = tomlkit.loads(open(CRONBOARD_CONFIG_FILE, "r").read())
-                config["notifications"] = self.notifications
                 config["telegram_token"] = encrypt_telegram_token(telegram_token)
                 config["telegram_chat_id"] = telegram_chat_id
 
@@ -98,15 +86,3 @@ class CronSettings(Widget):
                 self.query_one("#telegram-chat-id", Input).value = telegram_chat_id
         except Exception as e:
             print(f"Warning: Failed to fetch settings: {e}")
-
-    def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
-        """Enable/disable logs using radio buttons
-
-        Args:
-            event: RadioSet.Changed object. Identifies the button throught id.
-        """
-
-        if event.pressed.id == "enable":
-            self.notifications = True
-        elif event.pressed.id == "disable":
-            self.notifications = False
