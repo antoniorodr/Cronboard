@@ -487,7 +487,10 @@ class CronTable(DataTable):
         }
 
         for job in cron_to_use:
-            if job.comment == identificator and job.command in cmd_variants:
+            if job.comment == identificator and (
+                job.command in cmd_variants
+                or command_without_wrapper(job.command) == command_without_wrapper(cmd)
+            ):
                 return job
         return None
 

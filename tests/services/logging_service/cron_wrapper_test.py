@@ -235,6 +235,22 @@ def test_wrap_command_includes_identificator(mock_bash, mock_wrapper_installed):
     assert res == ("/bin/bash /tmp/cron-wrapper.sh job-42 cronboard1:ZWNobyBoZWxsbw==")
 
 
+def test_wrap_command_with_notifications_disabled(mock_bash, mock_wrapper_installed):
+    res = mod.wrap_command("echo hello", "job-1", None, False)
+
+    assert res == (
+        "/bin/bash /tmp/cron-wrapper.sh job-1 --no-notify cronboard1:ZWNobyBoZWxsbw=="
+    )
+
+
+def test_wrap_command_with_notifications_enabled_has_no_flag(
+    mock_bash, mock_wrapper_installed
+):
+    res = mod.wrap_command("echo hello", "job-1", None, True)
+
+    assert mod.NO_NOTIFY_FLAG not in res
+
+
 def test_has_wrapper_valid(mock_bash):
     cmd = "/bin/bash /tmp/cron-wrapper.sh job-1 echo hello"
     assert mod.has_wrapper(cmd) is True
@@ -336,3 +352,48 @@ def test_command_without_wrapper_extra_spaces(mock_bash):
     res = mod.command_without_wrapper(cmd)
 
     assert res == "echo hello"
+
+
+def test_command_without_wrapper_skips_no_notify_flag(mock_bash):
+    cmd = "/bin/bash /tmp/cron-wrapper.sh job-1 --no-notify cronboard1:ZWNobyBoZWxsbw=="
+    res = mod.command_without_wrapper(cmd)
+
+    assert res == "echo hello"
+
+
+def test_command_without_wrapper_no_notify_flag_without_command(mock_bash):
+    cmd = "/bin/bash /tmp/cron-wrapper.sh job-1 --no-notify"
+    res = mod.command_without_wrapper(cmd)
+
+    assert res == cmd
+
+
+def test_wrap_command_without_notifications_round_trip(
+    mock_bash, mock_wrapper_installed
+):
+    inner = "echo 'a' && echo \"b\" | wc -l"
+    wrapped = mod.wrap_command(inner, "job-x", None, False)
+
+    assert mod.command_without_wrapper(wrapped) == inner
+    assert mod.has_wrapper(wrapped) is True
+    assert mod.notifications_enabled(wrapped) is False
+
+
+def test_notifications_enabled_without_flag(mock_bash):
+    cmd = "/bin/bash /tmp/cron-wrapper.sh job-1 cronboard1:ZWNobyBoZWxsbw=="
+
+    assert mod.notifications_enabled(cmd) is True
+
+
+def test_notifications_enabled_with_flag(mock_bash):
+    cmd = "/bin/bash /tmp/cron-wrapper.sh job-1 --no-notify cronboard1:ZWNobyBoZWxsbw=="
+
+    assert mod.notifications_enabled(cmd) is False
+
+
+def test_notifications_enabled_unwrapped_command(mock_bash):
+    assert mod.notifications_enabled("echo hello") is True
+
+
+def test_notifications_enabled_parse_error(mock_bash):
+    assert mod.notifications_enabled("echo 'unterminated") is True

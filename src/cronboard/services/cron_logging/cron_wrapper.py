@@ -29,6 +29,14 @@ prefix still run via the wrapper's multi-argument branch.
 
 COMMAND_PAYLOAD_PREFIX = "cronboard1:"
 
+"""
+Flag placed before the command payload in wrapped crontab lines when the user
+turned notifications off for that cronjob. Lines without it keep following the
+global notifications setting.
+"""
+
+NO_NOTIFY_FLAG = "--no-notify"
+
 
 def get_remote_bash_path(ssh: paramiko.SSHClient) -> str:
     """Gets the path to the bash executable on the remote server.
@@ -290,6 +298,7 @@ def wrap_command(
     command: str,
     identificator: str,
     ssh: paramiko.SSHClient | None = None,
+    notifications: bool = True,
 ) -> str:
     """Wraps the cronjob's command with the log wrapper.
 
@@ -297,6 +306,7 @@ def wrap_command(
         command: The command to wrap.
         identificator: The identificator of the cronjob.
         ssh: Paramiko SSH client for remote operations.
+        notifications: Whether this cronjob may send notifications when it fails.
 
     Returns:
         The wrapped command if the wrapper is installed, else the original command.
@@ -325,9 +335,10 @@ def wrap_command(
     ):
         return command
     payload: str = _encode_wrapped_command_payload(command)
+    no_notify: str = "" if notifications else f"{NO_NOTIFY_FLAG} "
     return (
         f"{shlex.quote(bash_path)} {shlex.quote(wrapper_path)} "
-        f"{shlex.quote(identificator)} {shlex.quote(payload)}"
+        f"{shlex.quote(identificator)} {no_notify}{shlex.quote(payload)}"
     )
 
 
@@ -384,11 +395,33 @@ def command_without_wrapper(command: str) -> str:
 
     if not wrapper_path.endswith("cron-wrapper.sh"):
         return command
-    if len(parts) < 4:
+
+    rest: list[str] = parts[3:]
+    if rest[0] == NO_NOTIFY_FLAG:
+        rest = rest[1:]
+    if not rest:
         return command
 
-    decoded: str | None = _decode_wrapped_command_payload(parts[3])
+    decoded: str | None = _decode_wrapped_command_payload(rest[0])
     if decoded is not None:
         return decoded
     # Legacy: remainder was split as argv words; best-effort rejoin.
-    return " ".join(parts[3:])
+    return " ".join(rest)
+
+
+def notifications_enabled(command: str) -> bool:
+    """Checks if the cronjob is allowed to send notifications when it fails.
+
+    Args:
+        command: The command to check.
+
+    Returns:
+        False if notifications were turned off for this cronjob, else True.
+    """
+
+    try:
+        parts: list[str] = shlex.split(command)
+    except ValueError:
+        return True
+
+    return len(parts) < 4 or parts[3] != NO_NOTIFY_FLAG

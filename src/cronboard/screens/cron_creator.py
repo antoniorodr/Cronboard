@@ -12,6 +12,7 @@ from cronboard.services.cron_autocomplete import CronAutoComplete
 from cronboard.services.cron_logging.cron_wrapper import (
     command_without_wrapper,
     has_wrapper,
+    notifications_enabled,
     wrap_command,
 )
 from cronboard.widgets.cron_vim_keys_radio_set import VimKeysRadioSet
@@ -65,6 +66,7 @@ class CronCreator(ModalScreen[bool]):
         self.command: str | None = command
         self.identificator: str | None = identificator
         self.log_enabled: bool = has_wrapper(command) if command else False
+        self.notifications: bool = notifications_enabled(command) if command else True
         self.cron: CronTab = cron
         self.remote: bool = remote
         self.ssh_client: SSHClient | None = ssh_client
@@ -124,6 +126,23 @@ class CronCreator(ModalScreen[bool]):
                         "Disable logging", id="disable", value=not self.log_enabled
                     ),
                 )
+                yield Label(
+                    "Tick if you want to be notified when this job fails "
+                    "(needs logging)",
+                    classes="form-label mt-2 pt-2",
+                )
+                yield VimKeysRadioSet(
+                    RadioButton(
+                        "Enable notifications",
+                        id="enable-notifications",
+                        value=self.notifications,
+                    ),
+                    RadioButton(
+                        "Disable notifications",
+                        id="disable-notifications",
+                        value=not self.notifications,
+                    ),
+                )
                 yield Horizontal(
                     Button("Save", variant="primary", id="save"),
                     Button("Cancel", variant="error", id="cancel"),
@@ -176,7 +195,7 @@ class CronCreator(ModalScreen[bool]):
         self.expression_description(expr, label_desc)
 
     def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
-        """Enable/disable logs using radio buttons
+        """Enable/disable logs and notifications using radio buttons
 
         Args:
             event: RadioSet.Changed object. Identifies the button throught id.
@@ -186,6 +205,10 @@ class CronCreator(ModalScreen[bool]):
             self.log_enabled = True
         elif event.pressed.id == "disable":
             self.log_enabled = False
+        elif event.pressed.id == "enable-notifications":
+            self.notifications = True
+        elif event.pressed.id == "disable-notifications":
+            self.notifications = False
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Determines the action on button pressed. It saves the cronjob on save. Shows
@@ -235,6 +258,7 @@ class CronCreator(ModalScreen[bool]):
                     command,
                     identificator,
                     self.ssh_client if self.remote and self.ssh_client else None,
+                    self.notifications,
                 )
             if job:
                 job.set_command(command)
@@ -324,6 +348,9 @@ class CronCreator(ModalScreen[bool]):
     def find_if_cronjob_exists(self, identificator: str, cmd: str):
         """Search for a cronjob in the list.
 
+        Commands are also compared without the log wrapper, so a job is still
+        found after its logging or notification setting changed.
+
         Args:
             identificator: String which identifies the cronjob.
             cmd: String representation of the command the cronjob executes.
@@ -333,6 +360,9 @@ class CronCreator(ModalScreen[bool]):
 
         """
         for job in self.cron:
-            if job.comment == identificator and job.command == cmd:
+            if job.comment == identificator and (
+                job.command == cmd
+                or command_without_wrapper(job.command) == command_without_wrapper(cmd)
+            ):
                 return job
         return None

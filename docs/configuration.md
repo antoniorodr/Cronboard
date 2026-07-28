@@ -73,4 +73,15 @@ https://api.telegram.org/bot<YourBotToken>/getUpdates
 
 
 >The Telegram bot token and chat ID are **never stored in plain text**, they are encrypted with `OpenSSL` before being written to disk.
->The notifications feature is a global setting
+
+### Notifications per cron job
+
+The settings panel holds the global switch: with it disabled no job notifies. With it enabled, each cron job can still opt out on its own.
+
+The creation/edit form has an **Enable notifications / Disable notifications** option. Choosing *Disable notifications* writes a `--no-notify` flag into the wrapped crontab line of that job, so the setting travels with the job and works the same on local and remote crontabs:
+
+```
+* * * * * /bin/bash ~/.config/cronboard/cron-wrapper.sh backup-job --no-notify cronboard1:<command>
+```
+
+Notifications are sent by the log wrapper, so a job only notifies when **logging is enabled** for it, the global switch is on, and the job is not opted out. Jobs created before this option existed keep following the global setting.

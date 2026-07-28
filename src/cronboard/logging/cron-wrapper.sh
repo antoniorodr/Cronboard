@@ -16,6 +16,14 @@ NOTIFICATIONS_ENABLED=$(grep 'notifications' "$CONFIG_FILE" | sed 's/^notificati
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 shift
 
+# Per-cronjob notification switch. Lines without the flag keep following the
+# global setting, so cronjobs created before this flag existed are unaffected.
+JOB_NOTIFICATIONS_ENABLED=true
+if [ "${1:-}" = "--no-notify" ]; then
+  JOB_NOTIFICATIONS_ENABLED=false
+  shift
+fi
+
 LOG_FILE="$LOG_DIR/${JOB_NAME}_${TIMESTAMP}.log"
 ERR_FILE="$LOG_DIR/${JOB_NAME}_${TIMESTAMP}.err"
 
@@ -106,7 +114,7 @@ fi
 rm -f "$LOG_FILE.out" "$ERR_FILE"
 
 # Send notification
-if [ $EXIT_CODE -ne 0 ] && $NOTIFICATIONS_ENABLED; then
+if [ $EXIT_CODE -ne 0 ] && $NOTIFICATIONS_ENABLED && $JOB_NOTIFICATIONS_ENABLED; then
   if [ -z "$TELEGRAM_TOKEN" ]; then
     echo "ERROR: Telegram token is empty - decryption likely failed" >> "$LOG_FILE"
   else
