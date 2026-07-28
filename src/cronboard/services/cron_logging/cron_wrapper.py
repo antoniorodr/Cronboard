@@ -15,6 +15,7 @@ from cronboard.config import (
     CONFIG_DIR,
     CONFIG_REL_PATH,
     CRONBOARD_CONFIG_FILE,
+    CRONBOARD_NOTIFICATIONS_FILE,
     KEY_FILE,
     WRAPPER_DIST,
     WRAPPER_SOURCE,
@@ -200,7 +201,9 @@ def install_wrapper_local():
     return str(target_file)
 
 
-def install_wrapper_remote(ssh: paramiko.SSHClient) -> str | None:
+def install_wrapper_remote(
+    ssh: paramiko.SSHClient, server_name: str = "local"
+) -> str | None:
     """Installs the log wrapper on the remote server.
 
     Args:
@@ -216,6 +219,7 @@ def install_wrapper_remote(ssh: paramiko.SSHClient) -> str | None:
     remote_file = f"{remote_dir}/{WRAPPER_DIST}"
     remote_key = f"{remote_dir}/secret.key"
     remote_config = f"{remote_dir}/config.toml"
+    remote_notifications = f"{remote_dir}/notifications.toml"
 
     sftp: SFTPClient = ssh.open_sftp()
 
@@ -228,8 +232,11 @@ def install_wrapper_remote(ssh: paramiko.SSHClient) -> str | None:
         ssh.exec_command(f"chmod 600 {remote_key}")
 
         config_content = _generate_telegram_config()
+        notifications_content = _generate_notifications_config_for_server(server_name)
         with sftp.open(remote_config, "w") as f:
             f.write(config_content)
+        with sftp.open(remote_notifications, "w") as f:
+            f.write(notifications_content)
 
     except Exception as e:
         print(f"Error: {e}")
