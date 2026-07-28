@@ -225,6 +225,7 @@ class CronTable(DataTable):
             remote=self.remote,
             ssh_client=self.ssh_client,
             crontab_user=self.crontab_user,
+            server_name=self.server_name,
         )
 
     def action_edit_cronjob_keybind(
@@ -249,6 +250,7 @@ class CronTable(DataTable):
             remote=self.remote,
             ssh_client=self.ssh_client,
             crontab_user=self.crontab_user,
+            server_name=self.server_name,
         )
 
     def action_delete_cronjob_keybind(self, job) -> None:
@@ -267,6 +269,7 @@ class CronTable(DataTable):
             remote=self.remote,
             ssh_client=self.ssh_client,
             crontab_user=self.crontab_user,
+            server_name=self.server_name,
         )
 
     def action_refresh(self) -> None:
@@ -415,6 +418,7 @@ class CronTable(DataTable):
                     cmd,
                     identificator,
                     self.ssh_client if self.remote and self.ssh_client else None,
+                    self.server_name,
                 ),
             )
 
@@ -448,6 +452,7 @@ class CronTable(DataTable):
                 cmd,
                 identificator,
                 self.ssh_client if self.remote and self.ssh_client else None,
+                self.server_name,
             ),
         )
         if job_to_edit:
@@ -461,9 +466,7 @@ class CronTable(DataTable):
         if not job_to_edit:
             job_to_edit = self.find_if_cronjob_exists(identificator, cmd)
         if job_to_edit:
-            self.action_edit_cronjob_keybind(
-                identificator, expr, job_to_edit.command
-            )
+            self.action_edit_cronjob_keybind(identificator, expr, job_to_edit.command)
 
     def action_delete_cronjob(self) -> None:
         """Deletes the selected cronjob."""
@@ -498,6 +501,7 @@ class CronTable(DataTable):
                 cmd,
                 identificator,
                 self.ssh_client if self.remote and self.ssh_client else None,
+                self.server_name,
             ),
             command_without_wrapper(cmd),
         }
