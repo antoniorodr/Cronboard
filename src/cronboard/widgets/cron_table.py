@@ -562,6 +562,12 @@ class CronTable(DataTable):
 
         row: list = self.get_row_at(self.cursor_row)
         identificator = row[0]
+        command = row[2]
+        log_enabled = self.has_log_enabled(identificator, command)
+
+        if not log_enabled:
+            self.notify("Log is disabled for this job")
+            return
 
         self.app.push_screen(
             LogViewModal(
