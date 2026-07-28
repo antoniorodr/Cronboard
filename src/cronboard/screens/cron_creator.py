@@ -371,3 +371,68 @@ class CronCreator(ModalScreen[bool]):
             if job.comment == identificator and job.command == cmd:
                 return job
         return None
+
+    def save_job_settings(
+        self, cron_name: str, notifications: bool, logging: bool
+    ) -> None:
+        """Saves the notification settings to the notifications file."""
+
+        try:
+            with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+                config = tomlkit.loads(f.read())
+        except FileNotFoundError:
+            config = tomlkit.document()
+
+        self._migrate_old_format(config)
+
+        if self.server_name not in config or not isinstance(
+            config[self.server_name], dict
+        ):
+            config[self.server_name] = tomlkit.table()
+        config[self.server_name][cron_name] = tomlkit.table()
+        config[self.server_name][cron_name]["notifications"] = notifications
+        config[self.server_name][cron_name]["logging"] = logging
+
+        with open(CRONBOARD_NOTIFICATIONS_FILE, "w") as f:
+            f.write(tomlkit.dumps(config))
+
+    def _migrate_old_format(self, config) -> None:
+        """Migrate old flat format (key = true) to new per-server format."""
+
+        to_migrate = []
+        for key, value in config.items():
+            if isinstance(value, bool):
+                to_migrate.append(key)
+        for key in to_migrate:
+            value = config.pop(key)
+            if "local" not in config or not isinstance(config["local"], dict):
+                config["local"] = tomlkit.table()
+            config["local"][key] = tomlkit.table()
+            config["local"][key]["notifications"] = value
+            config["local"][key]["logging"] = False
+
+    def push_notifications_to_remote(self) -> None:
+        """Pushes the flattened notifications.toml to the remote server."""
+
+        from cronboard.services.cron_logging.cron_wrapper import (
+            CONFIG_REL_PATH,
+            _generate_notifications_config_for_server,
+            get_remote_home,
+        )
+
+        try:
+            content = _generate_notifications_config_for_server(self.server_name)
+            if content is None:
+                return
+
+            home = get_remote_home(self.ssh_client)
+            if not home:
+                return
+
+            remote_path = f"{home}/{CONFIG_REL_PATH}/notifications.toml"
+            sftp = self.ssh_client.open_sftp()
+            with sftp.open(remote_path, "w") as f:
+                f.write(content)
+            sftp.close()
+        except Exception as e:
+            print(f"Warning: Failed to sync notifications.toml to remote: {e}")
