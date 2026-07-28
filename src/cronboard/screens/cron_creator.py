@@ -244,6 +244,12 @@ class CronCreator(ModalScreen[bool]):
             self._show_error("ID cannot contain spaces. e.g., backup_job_1")
             return
 
+        self.save_job_settings(
+            identificator, self.notifications_enabled, self.log_enabled
+        )
+        if self.remote and self.ssh_client:
+            self.push_notifications_to_remote()
+
         try:
             job = self.find_if_cronjob_exists(
                 identificator, command_without_wrapper(command)
@@ -255,13 +261,15 @@ class CronCreator(ModalScreen[bool]):
                         command,
                         identificator,
                         self.ssh_client if self.remote and self.ssh_client else None,
+                        self.server_name,
                     ),
                 )
-            if self.log_enabled:
+            if self.log_enabled or self.notifications_enabled:
                 command = wrap_command(
                     command,
                     identificator,
                     self.ssh_client if self.remote and self.ssh_client else None,
+                    self.server_name,
                 )
             if job:
                 job.set_command(command)
