@@ -155,6 +155,7 @@ class CronServers(Widget):
             ssh_client=ssh_client,
             id="remote-cron-table",
             crontab_user=crontab_user,
+            server_name=server_info["name"],
         )
 
         container = self.query_one("#servers-grid", Grid)
