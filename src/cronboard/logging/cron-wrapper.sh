@@ -50,26 +50,12 @@ else
   COMMAND_SUMMARY="$*"
 fi
 
-# Header
-{
-  echo "========================================"
-  echo "Cronboard Job Execution"
-  echo "Job: $JOB_NAME"
-  echo "Time: $TIMESTAMP"
-  printf '%s\n' "Command: ${COMMAND_SUMMARY}"
-  echo "========================================"
-  echo ""
-} > "$LOG_FILE"
-
-# Run command (capture stdout + stderr separately for stable ordering).
-# New-format lines pass the user command as one base64 payload (prefix cronboard1:)
-# so quotes and shell metacharacters in the original command are preserved.
-# Legacy lines pass argv words after the job id and are executed as before.
+# Run command (always)
 if [ "$#" -ge 1 ] && [ "${1#cronboard1:}" != "$1" ]; then
   encoded=${1#cronboard1:}
   shift
   if ! _tmp=$(mktemp); then
-    echo "cronboard: mktemp failed" >>"$LOG_FILE"
+    echo "cronboard: mktemp failed" >"$ERR_FILE"
     EXIT_CODE=1
   elif printf '%s' "$encoded" | base64 -d >"$_tmp" 2>/dev/null \
     || printf '%s' "$encoded" | base64 -D >"$_tmp" 2>/dev/null \
@@ -79,7 +65,7 @@ if [ "$#" -ge 1 ] && [ "${1#cronboard1:}" != "$1" ]; then
     rm -f "$_tmp"
   else
     rm -f "$_tmp"
-    echo "cronboard: invalid base64 command payload" >>"$LOG_FILE"
+    echo "cronboard: invalid base64 command payload" >"$ERR_FILE"
     EXIT_CODE=1
   fi
 else
@@ -87,44 +73,65 @@ else
   EXIT_CODE=$?
 fi
 
-# Append stdout first
-if [ -s "$LOG_FILE.out" ]; then
-  cat "$LOG_FILE.out" >> "$LOG_FILE"
+# If logging enabled, write log files
+if $LOG_ENABLED; then
+  mkdir -p "$LOG_DIR"
+
+  # Header
+  {
+    echo "========================================"
+    echo "Cronboard Job Execution"
+    echo "Job: $JOB_NAME"
+    echo "Time: $TIMESTAMP"
+    printf '%s\n' "Command: ${COMMAND_SUMMARY}"
+    echo "========================================"
+    echo ""
+  } > "$LOG_FILE"
+
+  # Append stdout first
+  if [ -s "$LOG_FILE.out" ]; then
+    cat "$LOG_FILE.out" >> "$LOG_FILE"
+  fi
+
+  # Append cleaned stderr after stdout (stable order)
+  if [ -s "$ERR_FILE" ]; then
+    echo "" >> "$LOG_FILE"
+    sed 's/^.*: line [0-9]\+: //' "$ERR_FILE" >> "$LOG_FILE"
+  fi
+
+  # Footer
+  {
+    echo ""
+    echo "========================================"
+    echo "Exit Code: $EXIT_CODE"
+    echo "Status: $([ $EXIT_CODE -eq 0 ] && echo SUCCESS || echo FAILED)"
+    echo "========================================"
+  } >> "$LOG_FILE"
+
+  # Cleanup temp files
+  rm -f "$LOG_FILE.out" "$ERR_FILE"
 fi
 
-# Append cleaned stderr after stdout (stable order)
-if [ -s "$ERR_FILE" ]; then
-  echo "" >> "$LOG_FILE"
-  sed 's/^.*: line [0-9]\+: //' "$ERR_FILE" >> "$LOG_FILE"
-fi
-
-# Footer
-{
-  echo ""
-  echo "========================================"
-  echo "Exit Code: $EXIT_CODE"
-  echo "Status: $([ $EXIT_CODE -eq 0 ] && echo SUCCESS || echo FAILED)"
-  echo "========================================"
-} >> "$LOG_FILE"
-
-# Capture error message
+# Capture error message (always, for notifications)
 ERROR_MSG=""
 if [ $EXIT_CODE -ne 0 ] && [ -s "$ERR_FILE" ]; then
   ERROR_MSG=$(head -1 "$ERR_FILE" | sed 's/^.*: line [0-9]\+: //')
 fi
 
-# Cleanup temp files
-rm -f "$LOG_FILE.out" "$ERR_FILE"
+# Cleanup temp files if logging was disabled
+if ! $LOG_ENABLED; then
+  rm -f "$LOG_FILE.out" "$ERR_FILE"
+fi
 
 # Send notification
 if [ $EXIT_CODE -ne 0 ] && $NOTIFICATIONS_ENABLED; then
   if [ -z "$TELEGRAM_TOKEN" ]; then
-    echo "ERROR: Telegram token is empty - decryption likely failed" >> "$LOG_FILE"
+    echo "ERROR: Telegram token is empty - decryption likely failed"
   else
     curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
       --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
       --data-urlencode "text=${JOB_NAME} failed (exit ${EXIT_CODE}): ${ERROR_MSG:-unknown error}" \
-      2>> "$LOG_DIR/curl_errors.log"
+      2>/dev/null
   fi
 fi
 
