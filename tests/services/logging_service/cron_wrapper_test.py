@@ -204,7 +204,7 @@ def test_install_wrapper_calls_remote_when_ssh_provided(mocker: MockerFixture):
     )
     res = mod.install_wrapper(ssh=ssh)
     assert res == "/remote/path"
-    mock_remote.assert_called_once_with(ssh)
+    mock_remote.assert_called_once_with(ssh, "local")
 
 
 def test_wrap_command_basic(mock_bash, mock_wrapper_installed):
