@@ -575,3 +575,39 @@ class CronTable(DataTable):
                 ssh_client=self.ssh_client if self.remote and self.ssh_client else None,
             ),
         )
+
+    def has_notifications_enabled(self, identificator: str) -> bool:
+        """Checks if the notifications are enabled for the selected cronjob."""
+
+        result = self._read_job_setting(identificator, "notifications", False)
+        return result if result is not None else False
+
+    def has_log_enabled(self, identificator: str, command: str) -> bool:
+        """Checks if the log is enabled for the selected cronjob."""
+
+        setting = self._read_job_setting(identificator, "logging", None)
+        if setting is not None:
+            return setting
+        return has_wrapper(command)
+
+    def _read_job_setting(
+        self, identificator: str, key: str, fallback: bool | None
+    ) -> bool:
+        """Reads the job setting from the notifications file."""
+
+        try:
+            with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+                config = tomlkit.loads(f.read())
+        except (FileNotFoundError, Exception):
+            return fallback
+
+        server_section = config.get(self.server_name)
+        if isinstance(server_section, dict):
+            section = server_section.get(identificator)
+            if isinstance(section, dict):
+                return section.get(key, fallback)
+
+        bare = config.get(identificator)
+        if isinstance(bare, bool):
+            return bare if key == "notifications" else False
+        return fallback
