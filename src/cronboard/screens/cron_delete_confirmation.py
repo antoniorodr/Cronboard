@@ -132,6 +132,43 @@ class CronDeleteConfirmation(ModalScreen[bool]):
 
         self.dismiss(True)
 
+    def delete_notification(self, ident: str) -> None:
+        """Deletes the notification entry for the cronjob in the notifications file."""
+
+        try:
+            with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+                config = tomlkit.loads(f.read())
+        except FileNotFoundError:
+            return
+
+        server_section = config.get(self.server_name)
+        if isinstance(server_section, dict) and ident in server_section:
+            del server_section[ident]
+            with open(CRONBOARD_NOTIFICATIONS_FILE, "w") as f:
+                f.write(tomlkit.dumps(config))
+
+    def push_notifications_to_remote(self) -> None:
+        """Pushes the flattened notifications.toml to the remote server."""
+
+        try:
+            content = _generate_notifications_config_for_server(self.server_name)
+            if content is None:
+                return
+
+            if self.ssh_client:
+                home = get_remote_home(self.ssh_client)
+
+            if not home:
+                return
+
+            remote_path = f"{home}/{CONFIG_REL_PATH}/notifications.toml"
+            sftp = self.ssh_client.open_sftp()
+            with sftp.open(remote_path, "w") as f:
+                f.write(content)
+            sftp.close()
+        except Exception as e:
+            print(f"Warning: Failed to sync notifications.toml to remote: {e}  ")
+
     def write_remote_crontab(self) -> bool:
         """Writes the current SSH cron table back to the remote server.
 
