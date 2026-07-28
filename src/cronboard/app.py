@@ -122,7 +122,7 @@ class CronBoard(App):
         self.theme: str = saved_theme
         self.servers = None
         self.settings_tab = None
-        self.local_table = CronTable(id="local-crontable")
+        self.local_table = CronTable(id="local-crontable", server_name="local")
         self.content_container.mount(self.local_table)
         self.local_table.display = True
         self.set_focus(self.local_table)
@@ -253,7 +253,12 @@ class CronBoard(App):
             self.settings_tab.action_jump()
 
     def action_create_cronjob(
-        self, cron: CronTab, remote=False, ssh_client=None, crontab_user=None
+        self,
+        cron: CronTab,
+        remote=False,
+        ssh_client=None,
+        crontab_user=None,
+        server_name="local",
     ) -> None:
         """Shows the CronCreator modal.
 
@@ -282,13 +287,23 @@ class CronBoard(App):
 
         self.push_screen(
             CronCreator(
-                cron, remote=remote, ssh_client=ssh_client, crontab_user=crontab_user
+                cron,
+                remote=remote,
+                ssh_client=ssh_client,
+                crontab_user=crontab_user,
+                server_name=server_name,
             ),
             check_save,
         )
 
     def action_delete_cronjob(
-        self, job, cron=None, remote=False, ssh_client=None, crontab_user=None
+        self,
+        job,
+        cron=None,
+        remote=False,
+        ssh_client=None,
+        crontab_user=None,
+        server_name="local",
     ) -> None:
         """Shows the CronDeleteConfirmation modal.
 
@@ -323,6 +338,7 @@ class CronBoard(App):
                 remote=remote,
                 ssh_client=ssh_client,
                 crontab_user=crontab_user,
+                server_name=server_name,
             ),
             check_delete,
         )
@@ -336,6 +352,7 @@ class CronBoard(App):
         remote=False,
         ssh_client=None,
         crontab_user=None,
+        server_name="local",
     ) -> None:
         """Shows the CronCreator modal to edit a cronjob.
 
@@ -374,6 +391,7 @@ class CronBoard(App):
                 remote=remote,
                 ssh_client=ssh_client,
                 crontab_user=crontab_user,
+                server_name=server_name,
             ),
             check_save,
         )
