@@ -8,10 +8,10 @@ from textual.screen import ModalScreen
 from textual.widget import Widget
 from textual.widgets import Button, Input, Label, RadioButton, RadioSet
 
+from cronboard.config import CRONBOARD_NOTIFICATIONS_FILE
 from cronboard.services.cron_autocomplete import CronAutoComplete
 from cronboard.services.cron_logging.cron_wrapper import (
     command_without_wrapper,
-    has_wrapper,
     wrap_command,
 )
 from cronboard.widgets.cron_vim_keys_radio_set import VimKeysRadioSet
@@ -59,16 +59,19 @@ class CronCreator(ModalScreen[bool]):
         remote=False,
         ssh_client=None,
         crontab_user=None,
+        server_name="local",
     ) -> None:
         super().__init__()
         self.expression: str | None = expression
         self.command: str | None = command
         self.identificator: str | None = identificator
-        self.log_enabled: bool = has_wrapper(command) if command else False
+        self.log_enabled: bool = False
         self.cron: CronTab = cron
         self.remote: bool = remote
         self.ssh_client: SSHClient | None = ssh_client
         self.crontab_user: CronTab | None = crontab_user
+        self.notifications_enabled: bool = False
+        self.server_name: str = server_name
 
     def compose(self) -> ComposeResult:
         """Builds the modal UI: cron expression help, expression input,
@@ -115,7 +118,7 @@ class CronCreator(ModalScreen[bool]):
                     id="identificator",
                 )
                 yield Label(
-                    "Tick if you want to enable logging",
+                    "Tick if you want to enable logging/notifications",
                     classes="form-label mt-2 pt-2",
                 )
                 yield VimKeysRadioSet(
