@@ -151,6 +151,10 @@ CronTabs {
   border: thick $primary;
 }
 
+CronCreator #dialog {
+  align: center top;
+}
+
 LogViewModal #dialog {
   width: 96%;
   height: 94%;
@@ -163,6 +167,10 @@ LogViewModal #dialog {
   width: 100%;
   height: auto;
   padding: 1 2 0 2;
+}
+
+CronCreator #content {
+  align: center top;
 }
 
 #content>Label {
