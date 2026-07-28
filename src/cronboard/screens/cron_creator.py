@@ -78,7 +78,7 @@ class CronCreator(ModalScreen[bool]):
         command input with autocomplete, job ID input, logging toggle,
         save/cancel buttons, and error label."""
 
-        with Grid(id="dialog"):
+        with Vertical(id="dialog"):
             with Vertical(id="content"):
                 yield Label("Special characters:", id="label_special")
                 yield Grid(
