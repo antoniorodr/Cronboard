@@ -5,13 +5,24 @@ set -o pipefail
 JOB_NAME="${1:-unknown_job}"
 
 CONFIG_FILE="${CRONBOARD_CONFIG_FILE:-$HOME/.config/cronboard/config.toml}"
+NOTIFICATIONS_FILE="${CRONBOARD_NOTIFICATIONS_FILE:-$HOME/.config/cronboard/notifications.toml}"
 LOG_DIR="${CRONBOARD_LOG_DIR:-$HOME/.config/cronboard/logs/${JOB_NAME}}"
-mkdir -p "$LOG_DIR"
 
 TELEGRAM_TOKEN_ENCRYPTED=$(grep 'telegram_token' "$CONFIG_FILE" | sed 's/^telegram_token *= *//; s/^"//; s/"$//')
 TELEGRAM_CHAT_ID=$(grep 'telegram_chat_id' "$CONFIG_FILE" | sed 's/^telegram_chat_id *= *//; s/^"//; s/"$//')
 TELEGRAM_TOKEN=$(printf '%s' "$TELEGRAM_TOKEN_ENCRYPTED" | openssl enc -d -aes-256-cbc -salt -pbkdf2 -pass file:"$HOME/.config/cronboard/secret.key" -base64 -A 2>/dev/null)
-NOTIFICATIONS_ENABLED=$(grep 'notifications' "$CONFIG_FILE" | sed 's/^notifications *= *//; s/^"//; s/"$//')
+
+NOTIFICATIONS_ENABLED=false
+LOG_ENABLED=false
+
+if [ -f "$NOTIFICATIONS_FILE" ]; then
+    if awk "/^\[(${JOB_NAME}|.*\.${JOB_NAME})\]/{found=1;next}/^\[/{found=0}found && /^notifications *= *true/{print;exit}" "$NOTIFICATIONS_FILE" | grep -q .; then
+        NOTIFICATIONS_ENABLED=true
+    fi
+    if awk "/^\[(${JOB_NAME}|.*\.${JOB_NAME})\]/{found=1;next}/^\[/{found=0}found && /^logging *= *true/{print;exit}" "$NOTIFICATIONS_FILE" | grep -q .; then
+        LOG_ENABLED=true
+    fi
+fi
 
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 shift
