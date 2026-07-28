@@ -5,45 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 28.07.2026
+
+### Changed
+- Update changelog by @antoniorodr
+
+### Fixed
+- Fix a but in the config file
+
 ## [1.1.0] - 28.07.2026
 
 ### Added
-- Add import for tomlkit
-- Add event to notifications radiobutton
-- Add radiobuttons for notifications
-- Add new attributes
-- Add `notifications` column to cron table
-- Add `CRONBOARD_NOTIFICATIONS_FILE` constant
+- Add import for tomlkit by @antoniorodr
+- Add event to notifications radiobutton by @antoniorodr
+- Add radiobuttons for notifications by @antoniorodr
+- Add new attributes by @antoniorodr
+- Add `notifications` column to cron table by @antoniorodr
+- Add `CRONBOARD_NOTIFICATIONS_FILE` constant by @antoniorodr
 
 ### Changed
-- Bump version to v1.1.0
-- Update notifications config on site
-- Use `server_name` in all operations
-- Change `Grid` to `Vertical` in `CronCreator`
-- Create helper methods for notifications
-- After creation, save the settings
-- Use `server_name`
-- Create helper functions for notifications
-- If logging is disabled, do not show log modal
-- Use `server_name` in all operations
-- Create helper functions for notifications
-- If cronjob is deleted, delete notifications entry
-- Create `server_name` param
-- Some adjustments on the parameters
-- Create helper function for notifications
-- Copy the `notifications.toml` file to server
-- Only create logs if logging is enabled
-- Check if log and/or notifications are enabled
-- Update `cron_creator` and `cron_delete_confirmation` modals
+- Bump version to v1.1.0 by @antoniorodr
+- Update notifications config on site by @antoniorodr
+- Use `server_name` in all operations by @antoniorodr
+- Change `Grid` to `Vertical` in `CronCreator` by @antoniorodr
+- Create helper methods for notifications by @antoniorodr
+- After creation, save the settings by @antoniorodr
+- Use `server_name` by @antoniorodr
+- Create helper functions for notifications by @antoniorodr
+- If logging is disabled, do not show log modal by @antoniorodr
+- Use `server_name` in all operations by @antoniorodr
+- Create helper functions for notifications by @antoniorodr
+- If cronjob is deleted, delete notifications entry by @antoniorodr
+- Create `server_name` param by @antoniorodr
+- Some adjustments on the parameters by @antoniorodr
+- Create helper function for notifications by @antoniorodr
+- Copy the `notifications.toml` file to server by @antoniorodr
+- Only create logs if logging is enabled by @antoniorodr
+- Check if log and/or notifications are enabled by @antoniorodr
+- Update `cron_creator` and `cron_delete_confirmation` modals by @antoniorodr
 - Update link to documentation for notifications by @antoniorodr
 - Update explanation for Telegram notifications by @antoniorodr
 - Update changelog by @antoniorodr
 
 ### Fixed
-- Update function calling with new signature
+- Update function calling with new signature by @antoniorodr
 
 ### Removed
-- Delete notifications toggle
+- Delete notifications toggle by @antoniorodr
 
 ## [1.0.0] - 27.07.2026
 
@@ -270,43 +278,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.1] - 26.05.2026
 
 ### Changed
-- Merge branch 'release/v0.6.1' by @antoniorodr
-- Update `README.md` by @antoniorodr
-- Move css to `cronboard.tcss` by @antoniorodr
-- Create wrapper and log constants by @antoniorodr
-- Move path constants to `config.py` by @antoniorodr
-- Update contants path by @antoniorodr
-- Move `LOG_DIR` constant to config.py by @antoniorodr
-- Update version by @antoniorodr
-- Create config.py to store path variables by @antoniorodr
-- Move path attributes to config file as constant by @antoniorodr
-- Update readme by @antoniorodr
-- Update keybinds by @antoniorodr
+- Merge branch 'release/v0.6.1'
+- Update `README.md`
+- Move css to `cronboard.tcss`
+- Create wrapper and log constants
+- Move path constants to `config.py`
+- Update contants path
+- Move `LOG_DIR` constant to config.py
+- Update version
+- Create config.py to store path variables
+- Move path attributes to config file as constant
+- Update readme
+- Update keybinds
 
 ### Fixed
-- Update test to use the new `config.py` file constants by @antoniorodr
-- Fix logs path by @antoniorodr
+- Update test to use the new `config.py` file constants
+- Fix logs path
 
 ### Removed
-- Delete unreachable code by @antoniorodr
+- Delete unreachable code
 
 ## [0.6.0] - 22.05.2026
 
 ### Added
-- Add __init__.py files to new folders by @antoniorodr
+- Add __init__.py files to new folders
 
 ### Changed
-- Update keyboard shortcuts for the documentation by @antoniorodr
-- Update changelog by @antoniorodr
-- Merge branch 'release/v0.6.0' by @antoniorodr
-- Update imports after moving files by @antoniorodr
-- Update cov pyproject by @antoniorodr
-- Move file to new location for better structure by @antoniorodr
-- Update imports after moving files by @antoniorodr
-- Move files to new location for better structure by @antoniorodr
-- Update imports after moving files by @antoniorodr
-- Move files to new location for better structure by @antoniorodr
-- Update imports after moving files by @antoniorodr
+- Update keyboard shortcuts for the documentation
+- Update changelog
+- Merge branch 'release/v0.6.0'
+- Update imports after moving files
+- Update cov pyproject
+- Move file to new location for better structure
+- Update imports after moving files
+- Move files to new location for better structure
+- Update imports after moving files
+- Move files to new location for better structure
+- Update imports after moving files
 - Update imports after the file move by @antoniorodr
 - Move CronEncrypt to cronboard/services/encryption by @antoniorodr
 - Merge branch 'feat/cronjob-logging' into release/v0.6.0 by @antoniorodr
@@ -338,7 +346,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog by @antoniorodr
 
 ### Fixed
-- Fix import which was making tests fail by @antoniorodr
+- Fix import which was making tests fail
 - Fix bash_path bug on macOS by @antoniorodr in [#50](https://github.com/antoniorodr/cronboard/pull/50)
 - Update test assert by @antoniorodr
 - Fix deleting cronjob in Servers tab by @bcExpt1123
@@ -678,6 +686,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### New Contributors
 * @antoniorodr made their first contribution
 
+[1.1.1]: https://github.com/antoniorodr/cronboard/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/antoniorodr/cronboard/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/antoniorodr/cronboard/compare/v0.7.3...v1.0.0
 [0.7.3]: https://github.com/antoniorodr/cronboard/compare/v0.7.2...v0.7.3
