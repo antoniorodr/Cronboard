@@ -121,11 +121,31 @@ class CronCreator(ModalScreen[bool]):
                     "Tick if you want to enable logging/notifications",
                     classes="form-label mt-2 pt-2",
                 )
-                yield VimKeysRadioSet(
-                    RadioButton("Enable logging", id="enable", value=self.log_enabled),
-                    RadioButton(
-                        "Disable logging", id="disable", value=not self.log_enabled
-                    ),
+                yield (
+                    Horizontal(
+                        VimKeysRadioSet(
+                            RadioButton(
+                                "Enable logging", id="enable", value=self.log_enabled
+                            ),
+                            RadioButton(
+                                "Disable logging",
+                                id="disable",
+                                value=not self.log_enabled,
+                            ),
+                        ),
+                        VimKeysRadioSet(
+                            RadioButton(
+                                "Enable notifications",
+                                id="enable-notifications",
+                                value=self.notifications_enabled,
+                            ),
+                            RadioButton(
+                                "Disable notifications",
+                                id="disable-notifications",
+                                value=not self.notifications_enabled,
+                            ),
+                        ),
+                    )
                 )
                 yield Horizontal(
                     Button("Save", variant="primary", id="save"),
