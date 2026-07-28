@@ -71,6 +71,4 @@ https://api.telegram.org/bot<YourBotToken>/getUpdates
 4. Look for the "chat" object in the response, which contains details about the chat your bot is part of.
 5. The "id" field within the "chat" object corresponds to the chat ID of the group or channel. Make note of this chat ID; you will need it to send messages to the chat.
 
-
 >The Telegram bot token and chat ID are **never stored in plain text**, they are encrypted with `OpenSSL` before being written to disk.
->The notifications feature is a global setting
