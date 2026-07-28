@@ -136,7 +136,7 @@ class CronDeleteConfirmation(ModalScreen[bool]):
         """Deletes the notification entry for the cronjob in the notifications file."""
 
         try:
-            with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+            with CRONBOARD_NOTIFICATIONS_FILE.open("r") as f:
                 config = tomlkit.loads(f.read())
         except FileNotFoundError:
             return
@@ -144,7 +144,7 @@ class CronDeleteConfirmation(ModalScreen[bool]):
         server_section = config.get(self.server_name)
         if isinstance(server_section, dict) and ident in server_section:
             del server_section[ident]
-            with open(CRONBOARD_NOTIFICATIONS_FILE, "w") as f:
+            with CRONBOARD_NOTIFICATIONS_FILE.open("w") as f:
                 f.write(tomlkit.dumps(config))
 
     def push_notifications_to_remote(self) -> None:

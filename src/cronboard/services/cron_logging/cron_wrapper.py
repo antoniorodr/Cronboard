@@ -251,7 +251,7 @@ def _generate_telegram_config() -> str:
     """Generates a minimal config.toml with only Telegram settings."""
 
     try:
-        with open(CRONBOARD_CONFIG_FILE, "r") as f:
+        with CRONBOARD_CONFIG_FILE.open("r") as f:
             config: dict = tomlkit.loads(f.read())
         minimal: dict = tomlkit.document()
         minimal["telegram_token"] = config.get("telegram_token", "")
@@ -270,7 +270,7 @@ def _generate_notifications_config_for_server(server_name: str) -> str:
     """
 
     try:
-        with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+        with CRONBOARD_NOTIFICATIONS_FILE.open("r") as f:
             config = tomlkit.loads(f.read())
         result = tomlkit.document()
         server_section = config.get(server_name)

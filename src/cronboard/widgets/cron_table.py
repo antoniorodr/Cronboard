@@ -596,7 +596,7 @@ class CronTable(DataTable):
         """Reads the job setting from the notifications file."""
 
         try:
-            with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+            with CRONBOARD_NOTIFICATIONS_FILE.open("r") as f:
                 config = tomlkit.loads(f.read())
         except (FileNotFoundError, Exception):
             return fallback

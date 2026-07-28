@@ -379,7 +379,7 @@ class CronCreator(ModalScreen[bool]):
         """Saves the notification settings to the notifications file."""
 
         try:
-            with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+            with CRONBOARD_NOTIFICATIONS_FILE.open("r") as f:
                 config = tomlkit.loads(f.read())
         except FileNotFoundError:
             config = tomlkit.document()
@@ -394,7 +394,7 @@ class CronCreator(ModalScreen[bool]):
         config[self.server_name][cron_name]["notifications"] = notifications
         config[self.server_name][cron_name]["logging"] = logging
 
-        with open(CRONBOARD_NOTIFICATIONS_FILE, "w") as f:
+        with CRONBOARD_NOTIFICATIONS_FILE.open("w") as f:
             f.write(tomlkit.dumps(config))
 
     def _migrate_old_format(self, config) -> None:

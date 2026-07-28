@@ -61,12 +61,11 @@ class CronSettings(Widget):
 
         if event.button.id == "save":
             try:
-                config = tomlkit.loads(open(CRONBOARD_CONFIG_FILE, "r").read())
+                config = tomlkit.loads(CRONBOARD_CONFIG_FILE.read_text())
                 config["telegram_token"] = encrypt_telegram_token(telegram_token)
                 config["telegram_chat_id"] = telegram_chat_id
 
-                with open(CRONBOARD_CONFIG_FILE, "w") as f:
-                    f.write(tomlkit.dumps(config))
+                CRONBOARD_CONFIG_FILE.write_text(tomlkit.dumps(config))
 
                 self.notify("Settings saved")
             except Exception as e:
@@ -76,7 +75,7 @@ class CronSettings(Widget):
         """Fetches the settings from the config file."""
 
         try:
-            with open(CRONBOARD_CONFIG_FILE, "r") as f:
+            with CRONBOARD_CONFIG_FILE.open("r") as f:
                 config: dict = tomlkit.loads(f.read())
                 telegram_token: str = config.get("telegram_token", "")
                 telegram_chat_id: str = config.get("telegram_chat_id", "")
