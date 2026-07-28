@@ -1,3 +1,4 @@
+import tomlkit
 from crontab import CronTab
 from paramiko.client import SSHClient
 from textual.app import ComposeResult
@@ -6,6 +7,12 @@ from textual.containers import Grid, Horizontal, Vertical
 from textual.screen import ModalScreen
 from textual.widgets import Button, Label
 
+from cronboard.config import CRONBOARD_NOTIFICATIONS_FILE
+from cronboard.services.cron_logging.cron_wrapper import (
+    CONFIG_REL_PATH,
+    _generate_notifications_config_for_server,
+    get_remote_home,
+)
 from cronboard.services.cron_messages import CronJobDeleted
 
 
@@ -39,6 +46,7 @@ class CronDeleteConfirmation(ModalScreen[bool]):
         server=None,
         message=None,
         crontab_user=None,
+        server_name="local",
     ) -> None:
         super().__init__()
         self.server = server
@@ -48,6 +56,7 @@ class CronDeleteConfirmation(ModalScreen[bool]):
         self.ssh_client: SSHClient | None = ssh_client
         self.message: str | None = message
         self.crontab_user: CronTab | None = crontab_user
+        self.server_name: str = server_name
 
     def compose(self) -> ComposeResult:
         """Builds the modal UI: message to display and two buttons (Delete and Cancel)"""
