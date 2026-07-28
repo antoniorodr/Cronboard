@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import tomlkit
 from crontab import CronTab
 from paramiko.client import SSHClient
 from rich.text import Text
@@ -7,6 +8,7 @@ from textual.binding import Binding
 from textual.coordinate import Coordinate
 from textual.widgets import DataTable
 
+from cronboard.config import CRONBOARD_NOTIFICATIONS_FILE
 from cronboard.screens.cron_input_search import CronInputSearch
 from cronboard.screens.cron_ssh_modal import CronSSHModal
 from cronboard.services.cron_logging.cron_wrapper import (
@@ -44,11 +46,19 @@ class CronTable(DataTable):
         Binding("L", "view_logs", "View Logs"),
     ]
 
-    def __init__(self, remote=False, ssh_client=None, crontab_user=None, **kwargs):
+    def __init__(
+        self,
+        remote=False,
+        ssh_client=None,
+        crontab_user=None,
+        server_name="local",
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self.remote: bool = remote
         self.ssh_client: SSHClient | None = ssh_client
         self.crontab_user: CronTab | None = crontab_user
+        self.server_name: str = server_name
         self._rows_data: list[tuple] = []
         self._search_matches: list[int] = []
         self._search_index: int = -1
@@ -63,6 +73,7 @@ class CronTable(DataTable):
             "Expression",
             "Command",
             "Log Enabled",
+            "Notifications Enabled",
             "Last Run",
             "Next Run",
             "Status",
@@ -138,7 +149,10 @@ class CronTable(DataTable):
         for job in cron:
             expr: str = job.slices.render()
             cmd: str = command_without_wrapper(job.command)
-            log_enabled: bool = has_wrapper(job.command)
+            log_enabled: bool | None = self.has_log_enabled(job.comment, job.command)
+            notifications_enabled: bool | None = self.has_notifications_enabled(
+                job.comment
+            )
             identificator: str = job.comment if job.comment else "No ID"
             try:
                 active_status: str = "Active" if job.is_enabled() else "Paused"
@@ -167,6 +181,7 @@ class CronTable(DataTable):
                 expr,
                 cmd,
                 str(log_enabled),
+                str(notifications_enabled),
                 str(last_dt),
                 str(next_dt),
                 status_text,
@@ -177,6 +192,7 @@ class CronTable(DataTable):
                     expr,
                     cmd,
                     str(log_enabled),
+                    str(notifications_enabled),
                     str(last_dt),
                     str(next_dt),
                     status_text,
