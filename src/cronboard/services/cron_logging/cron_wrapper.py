@@ -262,7 +262,31 @@ def _generate_telegram_config() -> str:
         return ""
 
 
-def install_wrapper(ssh: paramiko.SSHClient | None = None) -> str | None:
+def _generate_notifications_config_for_server(server_name: str) -> str:
+    """Generates a flattened notifications.toml for a specific server.
+
+    Extracts only entries for the given server and removes the server
+    prefix.
+    """
+
+    try:
+        with open(CRONBOARD_NOTIFICATIONS_FILE, "r") as f:
+            config = tomlkit.loads(f.read())
+        result = tomlkit.document()
+        server_section = config.get(server_name)
+        if isinstance(server_section, dict):
+            for job_name, value in server_section.items():
+                if isinstance(value, dict):
+                    result[job_name] = value
+        return tomlkit.dumps(result)
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+
+def install_wrapper(
+    ssh: paramiko.SSHClient | None = None, server_name: str = "local"
+) -> str | None:
     """Installs the log wrapper on the remote server or locally.
 
     Args:
