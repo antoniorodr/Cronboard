@@ -209,6 +209,10 @@ class CronCreator(ModalScreen[bool]):
             self.log_enabled = True
         elif event.pressed.id == "disable":
             self.log_enabled = False
+        elif event.pressed.id == "enable-notifications":
+            self.notifications_enabled = True
+        elif event.pressed.id == "disable-notifications":
+            self.notifications_enabled = False
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Determines the action on button pressed. It saves the cronjob on save. Shows
