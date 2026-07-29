@@ -12,7 +12,10 @@ from textual.widgets import Button, Input, Label, RadioButton, RadioSet
 from cronboard.config import CRONBOARD_NOTIFICATIONS_FILE
 from cronboard.services.cron_autocomplete import CronAutoComplete
 from cronboard.services.cron_logging.cron_wrapper import (
+    CONFIG_REL_PATH,
+    _generate_notifications_config_for_server,
     command_without_wrapper,
+    get_remote_home,
     wrap_command,
 )
 from cronboard.widgets.cron_vim_keys_radio_set import VimKeysRadioSet
@@ -414,12 +417,6 @@ class CronCreator(ModalScreen[bool]):
 
     def push_notifications_to_remote(self) -> None:
         """Pushes the flattened notifications.toml to the remote server."""
-
-        from cronboard.services.cron_logging.cron_wrapper import (
-            CONFIG_REL_PATH,
-            _generate_notifications_config_for_server,
-            get_remote_home,
-        )
 
         try:
             content = _generate_notifications_config_for_server(self.server_name)
