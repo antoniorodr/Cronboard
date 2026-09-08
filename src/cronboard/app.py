@@ -36,6 +36,8 @@ from cronboard.themes.everforest_dark_hard import everforest_dark_hard
 from cronboard.widgets.cron_table import CronTable
 from cronboard.widgets.cron_tabs import CronTabs
 
+# TODO: Add a way to configure the default theme
+
 
 def is_form_element(element: Widget | None):
     """Checks if the element is a form element.
